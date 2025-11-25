@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About - SAMJSENIOR.GD</title>
+  <title>Contact - SAMJSENIOR.GD</title>
   <style>
     /* --- FONT IMPORTS FROM LOCAL FILES --- */
     @font-face {
@@ -130,34 +130,32 @@
       color: #3a312d; 
     }
 
-    /* Always underline the About menu item */
-    .menu a.about {
+    /* Always underline the Contact menu item */
+    .menu a.contact {
       text-decoration: underline;
     }
 
-    /* --- IMAGE PLACEHOLDER --- */
-    .about-image {
-      grid-column: 1 / span 8;    /* Spans 8 columns starting from column 1 */
-      grid-row: 4 / span 14;      /* Changed from 3 to 4 - moved down by 1 row */
-      width: 100%;
-      height: 100%;
-      background: #eeeeee;
-      border: 0px solid #999;
-      object-fit: cover;
+    /* --- CONTACT INFO STYLING --- */
+    .contact-info {
+      grid-column: 9 / span 4;
+      grid-row: 4 / span 14;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* --- ABOUT TITLE SECTION --- */
-    .about-title {
-      grid-column: 9 / span 4;    /* Spans columns 9-12 (next to image, to margin) */
-      grid-row: 4 / span 2;       /* Changed from 3 to 4 - moved down by 1 row */
+    .contact-section {
       display: flex;
-      align-items: flex-start;
+      flex-direction: column;
+      margin-bottom: calc(var(--row-gap) * 3); /* Increased to 3 rows (2 for content + 1 blank row) */
+    }
+
+    .contact-title {
       font-family: 'PP Right Slab';
       font-weight: 500;
-      font-size: 45pt;
+      font-size: 20pt;
       line-height: 1;
       letter-spacing: 0;
-      white-space: normal;
+      margin-bottom: var(--row-gap);
       color: #3a312d;
       
       /* Additional optical alignment */
@@ -165,26 +163,26 @@
       hanging-punctuation: first last;
     }
 
-    /* --- ABOUT BODY COPY --- */
-    .about-body {
-      grid-column: 9 / span 4;    /* Same columns as title */
-      grid-row: 7 / span 11;      /* Changed from 6 to 7 - moved down by 1 row */
+    .contact-link {
       font-family: 'PP Right Grotesk';
       font-weight: 300;
-      font-size: 15pt;
+      font-size: 20pt;
       line-height: 1;
       letter-spacing: 0;
+      text-decoration: none;
       color: #3a312d;
-      padding-right: 15px;
+      transition: all 0.25s ease;
       
-      /* Optical alignment enhancements */
+      /* Additional optical alignment */
       text-wrap: pretty;
       hanging-punctuation: first last;
-      
-      /* Fallbacks for widows/orphans */
-      orphans: 2;
-      widows: 2;
     }
+
+    .contact-link:hover {
+      font-weight: 500;
+      letter-spacing: 0.025em;
+    }
+
   </style>
 </head>
 <body>
@@ -199,20 +197,30 @@
       <a href="Contact.html" class="contact">Contact</a>
     </nav>
 
-    <div class="about-image"></div>
-    <div class="about-title">About Me <br>& My Practice</div>
-    <div class="about-body">
-      My story starts with movement. Growing up abroad tuned my eye to the spaces where different cultures and perspectives meet. That same curiosity drives my design practice, where I explore the systems, ethics, and human connections that shape our world.<br><br>
-
-      My work is grounded in a few core convictions.<br><br>
-
-      I see systems as living networks. I am less interested in rigid frameworks and more in how visual and social structures can be made more adaptable, inclusive, and revealing of underlying relationships.<br><br>
-
-      I am committed to sustainable and ethical outcomes. I believe in a design process that considers environmental impact, longevity, and social good, aiming to create work that is not only effective but also responsible.<br><br>
-
-      I focus on human centered connections. At the heart of my practice is a drive to understand and serve the audience, using design to foster clarity, empathy, and meaningful engagement.<br><br>
-
-      This leads to a practice that is inherently interdisciplinary and process led. I blend research, writing, and hands on making, allowing the questions I ask to guide the form of the work. For me, design is a tool for critical inquiry. Its ultimate purpose is to create intelligent, intentional, and positive outcomes.
+    <div class="contact-info">
+      <!-- Instagram Section -->
+      <div class="contact-section">
+        <div class="contact-title">Instagram</div>
+        <a href="https://www.instagram.com/samjsenior.gd/" class="contact-link" target="_blank">@samjsenior.gd ↗</a>
+      </div>
+      
+      <!-- LinkedIn Section -->
+      <div class="contact-section">
+        <div class="contact-title">LinkedIn</div>
+        <a href="https://www.linkedin.com/in/sam-senior/r" class="contact-link" target="_blank">Sam Senior ↗</a>
+      </div>
+      
+      <!-- Email Section -->
+      <div class="contact-section">
+        <div class="contact-title">Email</div>
+        <a href="mailto:samjseniorgd@hotmail.com" class="contact-link">samjseniorgd@ ↗</a>
+      </div>
+      
+      <!-- Portfolio Section -->
+      <div class="contact-section">
+        <div class="contact-title portfolio-title">Portfolio ↓</div>
+        <!-- Portfolio link removed as requested -->
+      </div>
     </div>
   </div>
 </body>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SAMJSENIOR.GD - Archive</title>
+  <title>SAMJSENIOR.GD - Theory</title>
   <style>
     /* --- FONT IMPORTS --- */
     @font-face {
@@ -120,12 +120,12 @@
       color: #3a312d; 
     }
 
-    .menu a.archive {
+    .menu a.theory {
       text-decoration: underline;
     }
 
-    /* --- ARCHIVE CONTENT - EXACTLY AS ORIGINAL --- */
-    .archive-title {
+    /* --- THEORY CONTENT - EXACTLY AS ORIGINAL --- */
+    .theory-title {
       font-family: 'PP Right Slab';
       font-weight: 500;
       font-size: 45pt;
@@ -138,7 +138,7 @@
       z-index: 2;
     }
 
-    .archive-image {
+    .theory-image {
       background: #eeeeee;
       width: 100%;
       height: 100%;
@@ -164,14 +164,14 @@
     }
 
     .scroll-content {
-      min-height: calc(100vh - var(--margin-top) - var(--margin-bottom) - 60px); /* Adjusted to fit content */
+      min-height: calc(100vh - var(--margin-top) - var(--margin-bottom) - 60px);
       position: relative;
       display: grid;
       grid-template-columns: repeat(var(--cols), 1fr);
       grid-column-gap: var(--col-gap);
-      grid-template-rows: repeat(23, minmax(40px, 1fr)); /* Exactly 23 rows for content */
+      grid-template-rows: repeat(15, minmax(40px, 1fr)); /* 15 rows for 6 posts */
       grid-row-gap: var(--row-gap);
-      padding-bottom: 30px; /* Fake 30px bottom margin */
+      padding-bottom: 30px; /* 30px margin after last content */
     }
   </style>
 </head>
@@ -190,86 +190,67 @@
     <!-- Scroll container that starts at row 4 -->
     <div class="scroll-container">
       <div class="scroll-content">
-        <!-- Archive items will be inserted here by JavaScript -->
+        <!-- Theory items will be inserted here by JavaScript -->
       </div>
     </div>
   </div>
 
   <script>
-    // JSON data structure for archive items - First Section
-    const archiveDataSection1 = [
+    // JSON data structure for theory items - First Section
+    const theoryDataSection1 = [
       {
-        title: "Tyne Tour<br>Festival",
+        title: "Navigation<br>through Feelings",
         titleColumn: 1,
         imageColumn: 1
       },
       {
-        title: "Culture Quest<br>Gut Health",
+        title: "Celebrating the<br>Craft of Dark Beer",
         titleColumn: 5,
         imageColumn: 5
       },
       {
-        title: "Drifting<br>Cartographies",
+        title: "Tracing the Tracks<br>of Municipal Memory",
         titleColumn: 9,
         imageColumn: 9
       }
     ];
 
-    // JSON data structure for archive items - Second Section
-    const archiveDataSection2 = [
+    // JSON data structure for theory items - Second Section
+    const theoryDataSection2 = [
       {
-        title: "Tea Card<br>Typologies",
+        title: "Cultivating<br>Seed Sovereignty",
         titleColumn: 1,
         imageColumn: 1
       },
       {
-        title: "Yorkshire<br>Stout & Porter",
+        title: "Beneath the Surface<br>of Ocean Farms",
         titleColumn: 5,
         imageColumn: 5
       },
       {
-        title: "Forgotten<br>Trams",
+        title: "Designing for<br>Skin Confidence",
         titleColumn: 9,
         imageColumn: 9
       }
     ];
 
-    // JSON data structure for archive items - Third Section (NEW)
-    const archiveDataSection3 = [
-      {
-        title: "Seed Freedom<br>Campaign",
-        titleColumn: 1,
-        imageColumn: 1
-      },
-      {
-        title: "Seafarm<br>Sonnets",
-        titleColumn: 5,
-        imageColumn: 5
-      },
-      {
-        title: "Confidence In<br>Community",
-        titleColumn: 9,
-        imageColumn: 9
-      }
-    ];
-
-    // Function to create archive elements
-    function createArchive() {
+    // Function to create theory elements
+    function createTheory() {
       const scrollContent = document.querySelector('.scroll-content');
       
-      // First section of archive items
+      // First section of theory items
       // Titles at rows 1-2, images at rows 3-7 (5 rows tall)
-      archiveDataSection1.forEach((item, index) => {
+      theoryDataSection1.forEach((item, index) => {
         // Create title element - spans rows 1-2
         const titleElement = document.createElement('div');
-        titleElement.className = 'archive-title';
+        titleElement.className = 'theory-title';
         titleElement.innerHTML = item.title;
         titleElement.style.gridColumn = `${item.titleColumn} / span 4`;
         titleElement.style.gridRow = `1 / span 2`;
         
         // Create image element - spans rows 3-7 (5 rows tall)
         const imageElement = document.createElement('div');
-        imageElement.className = 'archive-image';
+        imageElement.className = 'theory-image';
         imageElement.style.gridColumn = `${item.imageColumn} / span 4`;
         imageElement.style.gridRow = `3 / span 5`; // 5 rows tall
         
@@ -285,19 +266,19 @@
       gapRow1.style.minHeight = 'var(--row-gap)';
       scrollContent.appendChild(gapRow1);
 
-      // Second section of archive items
+      // Second section of theory items
       // Titles at rows 9-10, images at rows 11-15 (5 rows tall)
-      archiveDataSection2.forEach((item, index) => {
+      theoryDataSection2.forEach((item, index) => {
         // Create title element - spans rows 9-10
         const titleElement = document.createElement('div');
-        titleElement.className = 'archive-title';
+        titleElement.className = 'theory-title';
         titleElement.innerHTML = item.title;
         titleElement.style.gridColumn = `${item.titleColumn} / span 4`;
         titleElement.style.gridRow = `9 / span 2`;
         
         // Create image element - spans rows 11-15 (5 rows tall)
         const imageElement = document.createElement('div');
-        imageElement.className = 'archive-image';
+        imageElement.className = 'theory-image';
         imageElement.style.gridColumn = `${item.imageColumn} / span 4`;
         imageElement.style.gridRow = `11 / span 5`; // 5 rows tall
         
@@ -305,38 +286,10 @@
         scrollContent.appendChild(titleElement);
         scrollContent.appendChild(imageElement);
       });
-
-      // Add empty row 16 as gap between sections
-      const gapRow2 = document.createElement('div');
-      gapRow2.style.gridColumn = '1 / -1';
-      gapRow2.style.gridRow = '16 / span 1';
-      gapRow2.style.minHeight = 'var(--row-gap)';
-      scrollContent.appendChild(gapRow2);
-
-      // Third section of archive items (NEW)
-      // Titles at rows 17-18, images at rows 19-23 (5 rows tall)
-      archiveDataSection3.forEach((item, index) => {
-        // Create title element - spans rows 17-18
-        const titleElement = document.createElement('div');
-        titleElement.className = 'archive-title';
-        titleElement.innerHTML = item.title;
-        titleElement.style.gridColumn = `${item.titleColumn} / span 4`;
-        titleElement.style.gridRow = `17 / span 2`;
-        
-        // Create image element - spans rows 19-23 (5 rows tall)
-        const imageElement = document.createElement('div');
-        imageElement.className = 'archive-image';
-        imageElement.style.gridColumn = `${item.imageColumn} / span 4`;
-        imageElement.style.gridRow = `19 / span 5`; // 5 rows tall
-        
-        // Insert elements into scroll content
-        scrollContent.appendChild(titleElement);
-        scrollContent.appendChild(imageElement);
-      });
     }
 
-    // Initialize archive
-    createArchive();
+    // Initialize theory
+    createTheory();
   </script>
 </body>
 </html>
