@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAMJSENIOR.GD - Projects</title>
+  <style>
+    /* --- FONT IMPORTS --- */
+    @font-face {
+      font-family: 'PP Right Slab';
+      src: url('./fonts/PPRightSlab-Medium.woff2') format('woff2'),
+           url('./fonts/PPRightSlab-Medium.woff') format('woff');
+      font-style: normal;
+      font-display: swap;
+      font-weight: 500;
+    }
+
+    @font-face {
+      font-family: 'PP Right Slab';
+      src: url('./fonts/PPRightSlab-Bold.woff2') format('woff2'),
+           url('./fonts/PPRightSlab-Bold.woff') format('woff');
+      font-style: normal;
+      font-display: swap;
+      font-weight: 700;
+    }
+
+    @font-face {
+      font-family: 'PP Right Grotesk';
+      src: url('./fonts/PPRightGrotesk-Light.woff2') format('woff2'),
+           url('./fonts/PPRightGrotesk-Light.woff') format('woff');
+      font-style: normal;
+      font-display: swap;
+      font-weight: 300;
+    }
+
+    @font-face {
+      font-family: 'PP Right Grotesk';
+      src: url('./fonts/PPRightGrotesk-Medium.woff2') format('woff2'),
+           url('./fonts/PPRightGrotesk-Medium.woff') format('woff');
+      font-style: normal;
+      font-display: swap;
+      font-weight: 500;
+    }
+
+    /* --- BASIC RESET --- */
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      color: #3a312d;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "kern" 1, "liga" 1;
+    }
+
+    body {
+      overflow-x: hidden;
+      overflow-y: hidden;
+      font-family: 'PP Right Grotesk', sans-serif;
+      font-weight: 300;
+      height: 100vh;
+      background: #ffffff;
+      color: #3a312d;
+    }
+
+    :root {
+      --margin-top: 30px;
+      --margin-bottom: 30px;
+      --margin-left: 30px;
+      --margin-right: 45px;
+      --cols: 12;
+      --col-gap: 30px;
+      --rows: 18;
+      --row-gap: 15px;
+    }
+
+    .page {
+      display: grid;
+      height: 100vh;
+      padding: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left);
+      grid-template-columns: repeat(var(--cols), 1fr);
+      grid-column-gap: var(--col-gap);
+      grid-template-rows: repeat(var(--rows), 1fr);
+      grid-row-gap: var(--row-gap);
+      position: relative;
+      min-width: 1920px;
+    }
+
+    /* --- NAVIGATION --- */
+    .logo {
+      grid-column: 1 / span 2;
+      grid-row: 1 / span 1;
+      display: flex;
+      align-items: center;
+      font-family: 'PP Right Slab';
+      font-weight: 700;
+      font-size: 20pt;
+      line-height: 20pt;
+      letter-spacing: 0.015em;
+      z-index: 1;
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+    }
+
+    .menu {
+      grid-column: 9 / span 4;
+      grid-row: 1 / span 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'PP Right Grotesk';
+      font-weight: 500;
+      font-size: 20pt;
+      line-height: 20pt;
+      letter-spacing: 0;
+      z-index: 1;
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+    }
+
+    .menu a { 
+      text-decoration: none; 
+      color: #3a312d; 
+    }
+
+    .menu a.projects {
+      text-decoration: underline;
+    }
+
+    /* --- PROJECTS CONTENT --- */
+    .project-title {
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 45pt;
+      line-height: 1;
+      letter-spacing: 0;
+      display: flex;
+      align-items: flex-end; /* Align to bottom of title area */
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+      z-index: 2; /* Ensure titles are above images */
+    }
+
+    .project-image {
+      background: #eeeeee;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1; /* Images behind titles */
+    }
+
+    /* --- SCROLL CTA --- */
+    .scroll-cta {
+      grid-column: 12 / span 1;
+      grid-row: 18 / span 1;
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="logo">SAMJSENIOR.GD</div>
+
+    <nav class="menu">
+      <a href="About.html" class="about">About</a>
+      <a href="Projects.html" class="projects">Projects</a>
+      <a href="Archive.html" class="archive">Archive</a>
+      <a href="Theory.html" class="theory">Theory</a>
+      <a href="Contact.html" class="contact">Contact</a>
+    </nav>
+
+    <!-- Projects will be inserted here by JavaScript -->
+    
+    <!-- Scroll CTA -->
+    <div class="scroll-cta">Scroll →</div>
+  </div>
+
+  <script>
+    // JSON data structure for projects
+    const projectsData = [
+      {
+        title: "Seed Freedom<br>Campaign",
+        titleColumn: 1,
+        imageColumn: 1
+      },
+      {
+        title: "Seafarm<br>Sonnets",
+        titleColumn: 5,
+        imageColumn: 5
+      },
+      {
+        title: "Confidence<br>In Community",
+        titleColumn: 9,
+        imageColumn: 9
+      }
+    ];
+
+    // Function to create project elements
+    function createProjects() {
+      const page = document.querySelector('.page');
+      
+      projectsData.forEach((project, index) => {
+        // Create title element - spans rows 9-10
+        const titleElement = document.createElement('div');
+        titleElement.className = 'project-title';
+        titleElement.innerHTML = project.title;
+        titleElement.style.gridColumn = `${project.titleColumn} / span 4`;
+        titleElement.style.gridRow = `9 / span 2`; // Fixed: rows 9-10
+        
+        // Create image element - spans rows 11-17
+        const imageElement = document.createElement('div');
+        imageElement.className = 'project-image';
+        imageElement.style.gridColumn = `${project.imageColumn} / span 4`;
+        imageElement.style.gridRow = `11 / span 7`; // Fixed: rows 11-17
+        
+        // Insert elements before scroll CTA
+        const scrollCta = document.querySelector('.scroll-cta');
+        page.insertBefore(titleElement, scrollCta);
+        page.insertBefore(imageElement, scrollCta);
+      });
+    }
+
+    // Initialize projects
+    createProjects();
+
+    // Scroll functionality
+    const page = document.querySelector('.page');
+    page.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      page.scrollLeft += e.deltaY;
+    });
+  </script>
+</body>
+</html>
