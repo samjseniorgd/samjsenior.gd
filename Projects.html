@@ -73,6 +73,7 @@
       --col-gap: 30px;
       --rows: 18;
       --row-gap: 15px;
+      --project-item-width: calc((100vw - var(--margin-left) - var(--margin-right) - (var(--col-gap) * 2)) / 3);
     }
 
     .page {
@@ -131,13 +132,14 @@
     /* --- PROJECTS CONTAINER --- */
     .projects-container {
       grid-column: 1 / span 12;
-      grid-row: 9 / span 9;
+      grid-row: 8 / span 10;
       display: flex;
       overflow-x: auto;
       overflow-y: hidden;
       scroll-behavior: smooth;
       position: relative;
       z-index: 1;
+      width: 100%;
       /* Hide scrollbar for Chrome, Safari and Opera */
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* IE and Edge */
@@ -150,15 +152,21 @@
 
     /* --- PROJECT ITEMS --- */
     .project-item {
-      flex: 0 0 calc(33.333% - 20px);
+      flex: 0 0 var(--project-item-width);
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(9, 1fr);
+      grid-template-rows: auto 1fr;
       grid-column-gap: var(--col-gap);
       grid-row-gap: var(--row-gap);
       margin-right: 30px;
       height: 100%;
       align-items: start;
+      align-content: start;
+    }
+
+    /* Remove margin from the last project item */
+    .project-item:last-child {
+      margin-right: 0;
     }
 
     .project-title {
@@ -168,19 +176,17 @@
       line-height: 1;
       letter-spacing: 0;
       display: flex;
-      align-items: flex-end; /* Keep text at bottom of title area */
+      align-items: flex-end;
       text-wrap: pretty;
       hanging-punctuation: first last;
       z-index: 2;
       grid-column: 1 / span 4;
-      grid-row: 1 / span 2;
-      height: 100%;
-      /* Ensure text doesn't get clipped */
+      grid-row: 1;
+      height: auto;
+      min-height: 0;
       overflow: visible;
-      /* Prevent any clipping */
-      transform: translateZ(0); /* Force hardware acceleration */
-      contain: layout style; /* Optimize rendering without clipping */
       padding-bottom: 10px;
+      margin-bottom: 10px;
     }
 
     .project-image {
@@ -190,7 +196,8 @@
       object-fit: cover;
       z-index: 1;
       grid-column: 1 / span 4;
-      grid-row: 3 / span 7;
+      grid-row: 2;
+      min-height: 0;
     }
 
     /* --- SCROLL CTA --- */
