@@ -8,8 +8,8 @@
     /* --- FONT IMPORTS --- */
     @font-face {
       font-family: 'PP Right Slab';
-      src: url('./fonts/PPRightSlab-Medium.woff2') format('woff2'),
-           url('./fonts/PPRightSlab-Medium.woff') format('woff');
+      src: url('../fonts/PPRightSlab-Medium.woff2') format('woff2'),
+           url('../fonts/PPRightSlab-Medium.woff') format('woff');
       font-style: normal;
       font-display: swap;
       font-weight: 500;
@@ -17,8 +17,8 @@
 
     @font-face {
       font-family: 'PP Right Slab';
-      src: url('./fonts/PPRightSlab-Bold.woff2') format('woff2'),
-           url('./fonts/PPRightSlab-Bold.woff') format('woff');
+      src: url('../fonts/PPRightSlab-Bold.woff2') format('woff2'),
+           url('../fonts/PPRightSlab-Bold.woff') format('woff');
       font-style: normal;
       font-display: swap;
       font-weight: 700;
@@ -26,8 +26,8 @@
 
     @font-face {
       font-family: 'PP Right Grotesk';
-      src: url('./fonts/PPRightGrotesk-Light.woff2') format('woff2'),
-           url('./fonts/PPRightGrotesk-Light.woff') format('woff');
+      src: url('../fonts/PPRightGrotesk-Light.woff2') format('woff2'),
+           url('../fonts/PPRightGrotesk-Light.woff') format('woff');
       font-style: normal;
       font-display: swap;
       font-weight: 300;
@@ -35,8 +35,8 @@
 
     @font-face {
       font-family: 'PP Right Grotesk';
-      src: url('./fonts/PPRightGrotesk-Medium.woff2') format('woff2'),
-           url('./fonts/PPRightGrotesk-Medium.woff') format('woff');
+      src: url('../fonts/PPRightGrotesk-Medium.woff2') format('woff2'),
+           url('../fonts/PPRightGrotesk-Medium.woff') format('woff');
       font-style: normal;
       font-display: swap;
       font-weight: 500;
@@ -164,6 +164,9 @@
       height: 100%;
       align-items: start;
       align-content: start;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none; /* This prevents the underline on the link itself */
     }
 
     /* Remove margin from the last project item */
@@ -189,6 +192,8 @@
       overflow: visible;
       padding-bottom: 10px;
       margin-bottom: 10px;
+      text-decoration: none; /* Ensure no underline on the title specifically */
+      transition: text-decoration 0.2s;
     }
 
     .project-image {
@@ -200,6 +205,11 @@
       grid-column: 1 / span 4;
       grid-row: 2;
       min-height: 0;
+    }
+
+    /* Hover effect - underline the title when hovering over the project item */
+    .project-item:hover .project-title {
+      text-decoration: underline;
     }
 
     /* --- SCROLL CTA --- */
@@ -225,12 +235,12 @@
     <div class="logo">SAMJSENIOR.GD</div>
 
     <nav class="menu">
-      <a href="About.html" class="about">About</a>
-      <a href="Projects.html" class="projects">Projects</a>
-      <a href="Archive.html" class="archive">Archive</a>
-      <a href="Theory.html" class="theory">Theory</a>
-      <a href="Contact.html" class="contact">Contact</a>
-    </nav>
+  <a href="about.html" class="about">About</a>
+  <a href="projects.html" class="projects">Projects</a>
+  <a href="archive.html" class="archive">Archive</a>
+  <a href="theory.html" class="theory">Theory</a>
+  <a href="contact.html" class="contact">Contact</a>
+</nav>
 
     <!-- Projects Container -->
     <div class="projects-container" id="projectsContainer">
@@ -246,31 +256,37 @@
     const projectsData = [
       {
         title: "Tyne Tour<br>Festival",
+        link: "../Project-Pages/Tyne-Tour-Festival.html",
         titleColumn: 1,
         imageColumn: 1
       },
       {
-        title: "Culture<br>Quest",
+        title: "Culture<br>Quest Tracker",
+        link: "../Project-Pages/Culture-Quest-Tracker.html",
         titleColumn: 5,
         imageColumn: 5
       },
       {
         title: "Drifting<br>Cartographies",
+        link: "../Project-Pages/Drifting-Cartographies.html",
         titleColumn: 9,
         imageColumn: 9
       },
       {
-        title: "Seed Frredom<br>Campaign",
+        title: "Seed Freedom<br>Campaign",
+        link: "../Project-Pages/Seed-Freedom-Campaign.html",
         titleColumn: 1,
         imageColumn: 1
       },
       {
         title: "Seafarm<br>Sonnets",
+        link: "../Project-Pages/Seafarm-Sonnets.html",
         titleColumn: 5,
         imageColumn: 5
       },
       {
         title: "Confidence<br>In Community",
+        link: "../Project-Pages/Confidence-In-Community.html",
         titleColumn: 9,
         imageColumn: 9
       }
@@ -282,8 +298,9 @@
       
       projectsData.forEach((project, index) => {
         // Create project item container
-        const projectItem = document.createElement('div');
+        const projectItem = document.createElement('a');
         projectItem.className = 'project-item';
+        projectItem.href = project.link;
         
         // Create title element
         const titleElement = document.createElement('div');

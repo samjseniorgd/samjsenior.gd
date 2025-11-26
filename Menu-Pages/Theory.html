@@ -158,6 +158,17 @@
       /* Hide scrollbar for all browsers */
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* IE and Edge */
+      
+      /* Subtle fade effect at bottom to indicate more content */
+      mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+      transition: mask-image 0.3s ease, -webkit-mask-image 0.3s ease;
+    }
+
+    /* Full opacity when scrolled to bottom */
+    .scroll-container.scrolled-to-bottom {
+      mask-image: none;
+      -webkit-mask-image: none;
     }
 
     /* Hide scrollbar for Chrome, Safari and Opera */
@@ -288,6 +299,36 @@
         scrollContent.appendChild(titleElement);
         scrollContent.appendChild(imageElement);
       });
+
+      // Add scroll event listener to handle fade effect
+      setTimeout(addScrollHandler, 100);
+    }
+
+    // Function to add scroll handler for fade effect
+    function addScrollHandler() {
+      const scrollContainer = document.getElementById('scrollContainer');
+      if (scrollContainer) {
+        // Add scroll event listener to handle fade
+        scrollContainer.addEventListener('scroll', handleScroll);
+        // Check initial state
+        handleScroll();
+      }
+    }
+
+    // Function to handle scroll events
+    function handleScroll() {
+      const scrollContainer = document.getElementById('scrollContainer');
+      
+      if (scrollContainer) {
+        const scrollBottom = scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight;
+        const isAtBottom = scrollBottom < 10; // 10px threshold
+        
+        if (isAtBottom) {
+          scrollContainer.classList.add('scrolled-to-bottom');
+        } else {
+          scrollContainer.classList.remove('scrolled-to-bottom');
+        }
+      }
     }
 
     // Initialize theory
