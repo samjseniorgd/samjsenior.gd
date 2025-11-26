@@ -98,7 +98,7 @@
       font-size: 20pt;
       line-height: 20pt;
       letter-spacing: 0.015em;
-      z-index: 1;
+      z-index: 10;
       text-wrap: pretty;
       hanging-punctuation: first last;
     }
@@ -114,7 +114,7 @@
       font-size: 20pt;
       line-height: 20pt;
       letter-spacing: 0;
-      z-index: 1;
+      z-index: 10;
       text-wrap: pretty;
       hanging-punctuation: first last;
     }
@@ -128,7 +128,39 @@
       text-decoration: underline;
     }
 
-    /* --- PROJECTS CONTENT --- */
+    /* --- PROJECTS CONTAINER --- */
+    .projects-container {
+      grid-column: 1 / span 12;
+      grid-row: 9 / span 9;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      position: relative;
+      z-index: 1;
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .projects-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* --- PROJECT ITEMS --- */
+    .project-item {
+      flex: 0 0 calc(33.333% - 20px);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      grid-column-gap: var(--col-gap);
+      grid-row-gap: var(--row-gap);
+      margin-right: 30px;
+      height: 100%;
+      align-items: start;
+    }
+
     .project-title {
       font-family: 'PP Right Slab';
       font-weight: 500;
@@ -136,10 +168,19 @@
       line-height: 1;
       letter-spacing: 0;
       display: flex;
-      align-items: flex-end; /* Align to bottom of title area */
+      align-items: flex-end; /* Keep text at bottom of title area */
       text-wrap: pretty;
       hanging-punctuation: first last;
-      z-index: 2; /* Ensure titles are above images */
+      z-index: 2;
+      grid-column: 1 / span 4;
+      grid-row: 1 / span 2;
+      height: 100%;
+      /* Ensure text doesn't get clipped */
+      overflow: visible;
+      /* Prevent any clipping */
+      transform: translateZ(0); /* Force hardware acceleration */
+      contain: layout style; /* Optimize rendering without clipping */
+      padding-bottom: 10px;
     }
 
     .project-image {
@@ -147,7 +188,9 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: 1; /* Images behind titles */
+      z-index: 1;
+      grid-column: 1 / span 4;
+      grid-row: 3 / span 7;
     }
 
     /* --- SCROLL CTA --- */
@@ -164,6 +207,7 @@
       justify-content: flex-end;
       text-wrap: pretty;
       hanging-punctuation: first last;
+      z-index: 10;
     }
   </style>
 </head>
@@ -179,7 +223,10 @@
       <a href="Contact.html" class="contact">Contact</a>
     </nav>
 
-    <!-- Projects will be inserted here by JavaScript -->
+    <!-- Projects Container -->
+    <div class="projects-container" id="projectsContainer">
+      <!-- Projects will be inserted here by JavaScript -->
+    </div>
     
     <!-- Scroll CTA -->
     <div class="scroll-cta">Scroll →</div>
@@ -189,7 +236,22 @@
     // JSON data structure for projects
     const projectsData = [
       {
-        title: "Seed Freedom<br>Campaign",
+        title: "Tyne Tour<br>Festival",
+        titleColumn: 1,
+        imageColumn: 1
+      },
+      {
+        title: "Culture<br>Quest",
+        titleColumn: 5,
+        imageColumn: 5
+      },
+      {
+        title: "Drifting<br>Cartographies",
+        titleColumn: 9,
+        imageColumn: 9
+      },
+      {
+        title: "Seed Frredom<br>Campaign",
         titleColumn: 1,
         imageColumn: 1
       },
@@ -207,26 +269,28 @@
 
     // Function to create project elements
     function createProjects() {
-      const page = document.querySelector('.page');
+      const container = document.getElementById('projectsContainer');
       
       projectsData.forEach((project, index) => {
-        // Create title element - spans rows 9-10
+        // Create project item container
+        const projectItem = document.createElement('div');
+        projectItem.className = 'project-item';
+        
+        // Create title element
         const titleElement = document.createElement('div');
         titleElement.className = 'project-title';
         titleElement.innerHTML = project.title;
-        titleElement.style.gridColumn = `${project.titleColumn} / span 4`;
-        titleElement.style.gridRow = `9 / span 2`; // Fixed: rows 9-10
         
-        // Create image element - spans rows 11-17
+        // Create image element
         const imageElement = document.createElement('div');
         imageElement.className = 'project-image';
-        imageElement.style.gridColumn = `${project.imageColumn} / span 4`;
-        imageElement.style.gridRow = `11 / span 7`; // Fixed: rows 11-17
         
-        // Insert elements before scroll CTA
-        const scrollCta = document.querySelector('.scroll-cta');
-        page.insertBefore(titleElement, scrollCta);
-        page.insertBefore(imageElement, scrollCta);
+        // Append elements to project item
+        projectItem.appendChild(titleElement);
+        projectItem.appendChild(imageElement);
+        
+        // Append project item to container
+        container.appendChild(projectItem);
       });
     }
 
@@ -234,10 +298,10 @@
     createProjects();
 
     // Scroll functionality
-    const page = document.querySelector('.page');
-    page.addEventListener('wheel', (e) => {
+    const projectsContainer = document.getElementById('projectsContainer');
+    projectsContainer.addEventListener('wheel', (e) => {
       e.preventDefault();
-      page.scrollLeft += e.deltaY;
+      projectsContainer.scrollLeft += e.deltaY;
     });
   </script>
 </body>

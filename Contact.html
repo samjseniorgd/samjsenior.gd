@@ -146,7 +146,7 @@
     .contact-section {
       display: flex;
       flex-direction: column;
-      margin-bottom: calc(var(--row-gap) * 3); /* Increased to 3 rows (2 for content + 1 blank row) */
+      margin-bottom: calc(var(--row-gap) * 3);
     }
 
     .contact-title {
@@ -179,6 +179,28 @@
     }
 
     .contact-link:hover {
+      font-weight: 500;
+      letter-spacing: 0.025em;
+    }
+
+    /* Portfolio specific styles */
+    .portfolio-title {
+      font-family: 'PP Right Grotesk';
+      font-weight: 300;
+      font-size: 20pt;
+      line-height: 1;
+      letter-spacing: 0;
+      text-decoration: none;
+      color: #3a312d;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      
+      /* Additional optical alignment */
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+    }
+
+    .portfolio-title:hover {
       font-weight: 500;
       letter-spacing: 0.025em;
     }
@@ -218,8 +240,7 @@
       
       <!-- Portfolio Section -->
       <div class="contact-section">
-        <div class="contact-title portfolio-title">Portfolio ↓</div>
-        <!-- Portfolio link removed as requested -->
+        <div class="contact-title">Portfolio</div>
       </div>
     </div>
   </div>
