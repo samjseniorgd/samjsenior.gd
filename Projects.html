@@ -62,13 +62,14 @@
       height: 100vh;
       background: #ffffff;
       color: #3a312d;
+      cursor: default;
     }
 
     :root {
       --margin-top: 30px;
       --margin-bottom: 30px;
       --margin-left: 30px;
-      --margin-right: 60px;
+      --margin-right: 45px;
       --cols: 12;
       --col-gap: 30px;
       --rows: 18;
@@ -123,6 +124,7 @@
     .menu a { 
       text-decoration: none; 
       color: #3a312d; 
+      cursor: pointer;
     }
 
     .menu a.projects {
@@ -304,11 +306,16 @@
     // Initialize projects
     createProjects();
 
-    // Scroll functionality
-    const projectsContainer = document.getElementById('projectsContainer');
-    projectsContainer.addEventListener('wheel', (e) => {
+    // Scroll functionality - attach to the entire document
+    document.addEventListener('wheel', (e) => {
       e.preventDefault();
+      const projectsContainer = document.getElementById('projectsContainer');
       projectsContainer.scrollLeft += e.deltaY;
+    });
+
+    // Prevent default scroll behavior on the entire page
+    document.addEventListener('scroll', (e) => {
+      e.preventDefault();
     });
   </script>
 </body>
