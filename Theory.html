@@ -58,6 +58,7 @@
       height: 100vh;
       background: #ffffff;
       color: #3a312d;
+      cursor: default;
     }
 
     :root {
@@ -118,6 +119,7 @@
     .menu a { 
       text-decoration: none; 
       color: #3a312d; 
+      cursor: pointer;
     }
 
     .menu a.theory {
@@ -188,7 +190,7 @@
     </nav>
 
     <!-- Scroll container that starts at row 4 -->
-    <div class="scroll-container">
+    <div class="scroll-container" id="scrollContainer">
       <div class="scroll-content">
         <!-- Theory items will be inserted here by JavaScript -->
       </div>
@@ -290,6 +292,18 @@
 
     // Initialize theory
     createTheory();
+
+    // Scroll functionality - attach to the entire document for vertical scrolling
+    document.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const scrollContainer = document.getElementById('scrollContainer');
+      scrollContainer.scrollTop += e.deltaY;
+    });
+
+    // Prevent default scroll behavior on the entire page
+    document.addEventListener('scroll', (e) => {
+      e.preventDefault();
+    });
   </script>
 </body>
 </html>
