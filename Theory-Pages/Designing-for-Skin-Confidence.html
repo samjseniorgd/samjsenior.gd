@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theory - SAMJSENIOR.GD</title>
+  <style>
+    /* --- FONT IMPORTS FROM LOCAL FILES --- */
+    @font-face {
+      font-family: 'PP Right Slab';
+      src: url('../fonts/PPRightSlab-Medium.woff2') format('woff2'),
+           url('../fonts/PPRightSlab-Medium.woff') format('woff');
+      font-style: normal;
+      font-display: swap;
+      font-weight: 500;
+    }
+
+    @font-face {
+      font-family: 'PP Right Slab';
+      src: url('../fonts/PPRightSlab-Bold.woff2') format('woff2'),
+           url('../fonts/PPRightSlab-Bold.woff') format('woff');
+      font-style: normal;
+      font-display: swap;
+      font-weight: 700;
+    }
+
+    @font-face {
+      font-family: 'PP Right Grotesk';
+      src: url('../fonts/PPRightGrotesk-Light.woff2') format('woff2'),
+           url('../fonts/PPRightGrotesk-Light.woff') format('woff');
+      font-style: normal;
+      font-display: swap;
+      font-weight: 300;
+    }
+
+    @font-face {
+      font-family: 'PP Right Grotesk';
+      src: url('../fonts/PPRightGrotesk-Medium.woff2') format('woff2'),
+           url('../fonts/PPRightGrotesk-Medium.woff') format('woff');
+      font-style: normal;
+      font-display: swap;
+      font-weight: 500;
+    }
+
+    /* --- BASIC RESET --- */
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      color: #3a312d;
+      
+      /* Optical alignment enhancements for ALL text */
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "kern" 1, "liga" 1;
+    }
+
+    body {
+      overflow-x: hidden;
+      overflow-y: hidden; /* Keep body hidden */
+      font-family: 'PP Right Grotesk', sans-serif;
+      font-weight: 300;
+      height: 100vh;
+      background: #ffffff;
+      color: #3a312d;
+    }
+
+    :root {
+      --margin-top: 30px;
+      --margin-bottom: 30px;
+      --margin-left: 30px;
+      --margin-right: 60px;
+      --cols: 12;
+      --col-gap: 30px;
+      --rows: 18;
+      --row-gap: 15px;
+    }
+
+    .page {
+      display: grid;
+      height: 100vh; /* Back to 100vh */
+      padding: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left);
+      grid-template-columns: repeat(var(--cols), 1fr);
+      grid-column-gap: var(--col-gap);
+      grid-template-rows: repeat(var(--rows), 1fr);
+      grid-row-gap: var(--row-gap);
+      position: relative;
+      min-width: 1920px;
+    }
+
+    /* --- NAVIGATION --- */
+    .logo {
+      grid-column: 1 / span 2;
+      grid-row: 1 / span 1;
+      display: flex;
+      align-items: center;
+      font-family: 'PP Right Slab';
+      font-weight: 700;
+      font-size: 20pt;
+      line-height: 20pt;
+      letter-spacing: 0.015em;
+      z-index: 1;
+      
+      /* Additional optical alignment */
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+    }
+
+    .menu {
+      grid-column: 9 / span 4;
+      grid-row: 1 / span 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'PP Right Grotesk';
+      font-weight: 500;
+      font-size: 20pt;
+      line-height: 20pt;
+      letter-spacing: 0;
+      z-index: 1;
+      
+      /* Additional optical alignment */
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+    }
+
+    .menu a { 
+      text-decoration: none; 
+      color: #3a312d; 
+    }
+
+    /* Always underline the Theory menu item */
+    .menu a.theory {
+      text-decoration: underline;
+    }
+
+    /* --- SUB NAVIGATION --- */
+    .sub-nav {
+      grid-column: 1 / span 8;
+      grid-row: 3 / span 1;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      font-family: 'PP Right Slab';
+      font-weight: 300;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      z-index: 1;
+    }
+
+    .sub-nav a, .sub-nav button {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      color: #3a312d;
+      transition: letter-spacing 0.2s ease; /* Only transition letter-spacing */
+      padding: 0;
+      font-weight: 300;
+    }
+
+    .sub-nav a:hover, .sub-nav button:hover {
+      font-weight: 500; /* Instant font-weight change */
+      letter-spacing: 0.025em;
+    }
+
+    /* --- IMAGE GALLERY --- */
+    .theory-gallery {
+      grid-column: 1 / span 4;
+      grid-row: 4 / span 14;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-image {
+      width: 100%;
+      height: 100%;
+      background: #eeeeee;
+      border: 0px solid #999;
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .gallery-image.active {
+      display: block;
+    }
+
+    .gallery-nav {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      background-color: #ffffff; /* Changed to solid white */
+      padding: 5px 10px;
+      border-radius: 3px;
+      z-index: 10;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: inherit;
+      cursor: pointer;
+      padding: 0 5px;
+      transition: opacity 0.2s;
+    }
+
+    .nav-btn:hover {
+      opacity: 0.7;
+    }
+
+    /* --- THEORY TITLE SECTION --- */
+    .theory-title {
+      grid-column: 5 / span 4;
+      grid-row: 4 / span 2;
+      display: flex;
+      align-items: flex-start;
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 45pt;
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: normal;
+      color: #3a312d;
+      
+      /* Additional optical alignment */
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+    }
+
+    /* --- THEORY BODY COPY --- */
+    .theory-body {
+      grid-column: 5 / span 8;
+      grid-row: 7 / span 10;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--col-gap);
+      font-family: 'PP Right Grotesk';
+      font-weight: 300;
+      font-size: 15pt;
+      line-height: 1.2;
+      letter-spacing: 0;
+      color: #3a312d;
+      
+      /* Optical alignment enhancements */
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+      
+      /* Fallbacks for widows/orphans */
+      orphans: 2;
+      widows: 2;
+    }
+
+    .theory-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- EXPLORE BUTTON --- */
+    .explore-btn {
+      grid-column: 5 / span 4;
+      grid-row: 17 / span 1;
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      display: flex;
+      align-items: flex-end;
+      text-wrap: pretty;
+      hanging-punctuation: first last;
+      z-index: 10;
+      cursor: pointer;
+      transition: letter-spacing 0.2s ease;
+      text-decoration: none;
+    }
+
+    .explore-btn:hover {
+      font-weight: 600; /* Instant font-weight change */
+      letter-spacing: 0.025em;
+    }
+
+    /* Removed colophon-related styles */
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="logo">SAMJSENIOR.GD</div>
+
+    <nav class="menu">
+      <a href="../Menu-Pages/about.html" class="about">About</a>
+      <a href="../Menu-Pages/projects.html" class="projects">Projects</a>
+      <a href="../Menu-Pages/archive.html" class="archive">Archive</a>
+      <a href="../Menu-Pages/theory.html" class="theory">Theory</a>
+      <a href="../Menu-Pages/contact.html" class="contact">Contact</a>
+    </nav>
+
+    <!-- UPDATED SUB NAVIGATION -->
+    <div class="sub-nav">
+      <a href="../Menu-Pages/theory.html">Theory ↖</a>
+      <a href="../Theory-Pages/Design-Ethics.html" class="sub-nav-btn next">Next →</a>
+      <a href="../Theory-Pages/Typography-Systems.html" class="sub-nav-btn prev">Back ←</a>
+    </div>
+
+    <div class="theory-gallery">
+      <!-- Image placeholders will be dynamically added by JavaScript -->
+      <div class="gallery-nav">
+        <button class="nav-btn prev">←</button>
+        <span class="image-counter">1 / 6</span>
+        <button class="nav-btn next">→</button>
+      </div>
+    </div>
+
+    <div class="theory-title" id="theory-title">Systemic Thinking in Digital Design</div>
+    
+    <div class="theory-body" id="theory-body">
+      <div class="theory-column">
+        <p>This theoretical framework explores the application of systemic thinking principles to digital design practice. By viewing design problems not as isolated issues but as interconnected systems, we can create more resilient, adaptive, and meaningful solutions.</p>
+        
+        <p>The approach draws from diverse fields including cybernetics, ecology, and complexity theory to develop a holistic understanding of how design decisions ripple through interconnected systems.</p>
+        
+        <p>At its core, systemic design recognizes that every design intervention exists within a network of relationships—technical, social, environmental, and economic. Understanding these relationships is crucial for creating designs that are not only functional but also sustainable and contextually appropriate.</p>
+      </div>
+      
+      <div class="theory-column">
+        <p>Key principles include feedback loops, emergent behavior, and non-linear causality. These concepts help designers anticipate second-order effects and design for adaptability rather than rigid control.</p>
+        
+        <p>The methodology emphasizes continuous learning and iteration, treating each project as an opportunity to better understand the system it operates within. This requires humility, curiosity, and a willingness to challenge assumptions.</p>
+        
+        <p>By adopting a systemic perspective, designers can move beyond solving surface-level problems to addressing root causes and creating lasting positive impact.</p>
+      </div>
+    </div>
+
+    <a href="../Theory-Pages/Systemic-Thinking-Expanded.html" class="explore-btn">Explore Theory ⮥</a>
+  </div>
+
+  <script>
+    // Theory data in JSON format
+    const theoryData = {
+      title: "Systemic Thinking<br>in Digital Design",
+      body: {
+        column1: [
+          "This theoretical framework explores the application of systemic thinking principles to digital design practice. By viewing design problems not as isolated issues but as interconnected systems, we can create more resilient, adaptive, and meaningful solutions.",
+          "The approach draws from diverse fields including cybernetics, ecology, and complexity theory to develop a holistic understanding of how design decisions ripple through interconnected systems.",
+          "At its core, systemic design recognizes that every design intervention exists within a network of relationships—technical, social, environmental, and economic. Understanding these relationships is crucial for creating designs that are not only functional but also sustainable and contextually appropriate."
+        ],
+        column2: [
+          "Key principles include feedback loops, emergent behavior, and non-linear causality. These concepts help designers anticipate second-order effects and design for adaptability rather than rigid control.",
+          "The methodology emphasizes continuous learning and iteration, treating each project as an opportunity to better understand the system it operates within. This requires humility, curiosity, and a willingness to challenge assumptions.",
+          "By adopting a systemic perspective, designers can move beyond solving surface-level problems to addressing root causes and creating lasting positive impact."
+        ]
+      }
+    };
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set theory content from JSON data
+      document.getElementById('theory-title').innerHTML = theoryData.title;
+      
+      const theoryBody = document.getElementById('theory-body');
+      const columns = theoryBody.querySelectorAll('.theory-column');
+      
+      // Populate first column
+      theoryData.body.column1.forEach(paragraph => {
+        const p = document.createElement('p');
+        p.innerHTML = paragraph;
+        columns[0].appendChild(p);
+      });
+      
+      // Populate second column
+      theoryData.body.column2.forEach(paragraph => {
+        const p = document.createElement('p');
+        p.innerHTML = paragraph;
+        columns[1].appendChild(p);
+      });
+
+      // Create gallery image placeholders
+      const gallery = document.querySelector('.theory-gallery');
+      for (let i = 0; i < 6; i++) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'gallery-image';
+        if (i === 0) placeholder.classList.add('active');
+        gallery.prepend(placeholder);
+      }
+
+      // Set up gallery navigation
+      const prevBtn = document.querySelector('.nav-btn.prev');
+      const nextBtn = document.querySelector('.nav-btn.next');
+      const counter = document.querySelector('.image-counter');
+      let currentIndex = 0;
+
+      function updateGallery() {
+        // Hide all images
+        document.querySelectorAll('.gallery-image').forEach(img => {
+          img.classList.remove('active');
+        });
+        
+        // Show current image
+        document.querySelectorAll('.gallery-image')[currentIndex].classList.add('active');
+        
+        // Update counter
+        counter.textContent = `${currentIndex + 1} / 6`;
+      }
+
+      prevBtn.addEventListener('click', function() {
+        currentIndex = (currentIndex - 1 + 6) % 6;
+        updateGallery();
+      });
+
+      nextBtn.addEventListener('click', function() {
+        currentIndex = (currentIndex + 1) % 6;
+        updateGallery();
+      });
+
+      // Initialize gallery
+      updateGallery();
+
+      // Sub-navigation functionality
+      const subNavPrev = document.querySelector('.sub-nav .prev');
+      const subNavNext = document.querySelector('.sub-nav .next');
+      
+      // Placeholder functions for sub-navigation
+      subNavPrev.addEventListener('click', function() {
+        // In a real implementation, this would navigate to the previous theory page
+        console.log('Navigate to previous theory page');
+        // Example: window.location.href = 'previous-theory.html';
+      });
+      
+      subNavNext.addEventListener('click', function() {
+        // In a real implementation, this would navigate to the next theory page
+        console.log('Navigate to next theory page');
+        // Example: window.location.href = 'next-theory.html';
+      });
+
+      // Removed colophon functionality
+    });
+  </script>
+</body>
+</html>
