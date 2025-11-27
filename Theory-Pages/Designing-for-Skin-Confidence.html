@@ -168,6 +168,32 @@
       letter-spacing: 0.025em;
     }
 
+    /* --- CAPTION SECTION --- */
+    .theory-caption {
+      grid-column: 5 / span 4;
+      grid-row: 7 / span 1;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      align-items: center;
+      font-family: 'PP Right Slab';
+      font-weight: 300;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      z-index: 1;
+    }
+
+    .caption-series {
+      grid-column: 1;
+      text-align: left;
+    }
+
+    .caption-date {
+      grid-column: 2;
+      text-align: right;
+      padding-right: 30px;
+    }
+
     /* --- IMAGE GALLERY --- */
     .theory-gallery {
       grid-column: 1 / span 4;
@@ -247,9 +273,10 @@
     /* --- THEORY BODY COPY --- */
     .theory-body {
       grid-column: 5 / span 8;
-      grid-row: 7 / span 10;
+      grid-row: 8 / span 10; /* CHANGED: starts at row 8 (one row after caption), spans 10 rows */
       display: grid;
       grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr; /* Single row for both columns */
       gap: var(--col-gap);
       font-family: 'PP Right Grotesk';
       font-weight: 300;
@@ -270,19 +297,48 @@
     .theory-column {
       display: flex;
       flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .theory-content {
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 10px; /* Space for scrollbar */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      
+      /* Fade effect at bottom when not scrolled to end */
+      mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+      transition: mask-image 0.3s ease;
+    }
+
+    .theory-content::-webkit-scrollbar {
+      display: none; /* Chrome, Safari and Opera */
+    }
+
+    .theory-content.scrolled-to-bottom {
+      /* Remove fade effect when scrolled to bottom */
+      mask-image: none;
+    }
+
+    .theory-column p {
+      margin-bottom: 20px;
+      flex-shrink: 0;
     }
 
     /* --- EXPLORE BUTTON --- */
     .explore-btn {
-      grid-column: 5 / span 4;
-      grid-row: 17 / span 1;
+      grid-column: 9 / span 4; /* Aligned with second text column */
+      grid-row: 7 / span 1; /* Same row as caption (row 7) */
       font-family: 'PP Right Slab';
       font-weight: 500;
       font-size: 15pt;
       line-height: 15pt;
       letter-spacing: 0;
       display: flex;
-      align-items: flex-end;
+      align-items: center; /* Changed from flex-start to center for vertical alignment */
       text-wrap: pretty;
       hanging-punctuation: first last;
       z-index: 10;
@@ -327,68 +383,131 @@
       </div>
     </div>
 
-    <div class="theory-title" id="theory-title">Systemic Thinking in Digital Design</div>
+    <div class="theory-title" id="theory-title">Designing for Skin Confidence</div>
     
+    <!-- NEW CAPTION SECTION -->
+    <div class="theory-caption">
+      <div class="caption-series">Working Theory</div>
+      <div class="caption-date">12.11.2025</div>
+    </div>
+
     <div class="theory-body" id="theory-body">
-      <div class="theory-column">
-        <p>This theoretical framework explores the application of systemic thinking principles to digital design practice. By viewing design problems not as isolated issues but as interconnected systems, we can create more resilient, adaptive, and meaningful solutions.</p>
-        
-        <p>The approach draws from diverse fields including cybernetics, ecology, and complexity theory to develop a holistic understanding of how design decisions ripple through interconnected systems.</p>
-        
-        <p>At its core, systemic design recognizes that every design intervention exists within a network of relationships—technical, social, environmental, and economic. Understanding these relationships is crucial for creating designs that are not only functional but also sustainable and contextually appropriate.</p>
+      <div class="theory-column" id="column-left">
+        <div class="theory-content" id="content-left">
+          <!-- Left column content will be populated first -->
+        </div>
       </div>
       
-      <div class="theory-column">
-        <p>Key principles include feedback loops, emergent behavior, and non-linear causality. These concepts help designers anticipate second-order effects and design for adaptability rather than rigid control.</p>
-        
-        <p>The methodology emphasizes continuous learning and iteration, treating each project as an opportunity to better understand the system it operates within. This requires humility, curiosity, and a willingness to challenge assumptions.</p>
-        
-        <p>By adopting a systemic perspective, designers can move beyond solving surface-level problems to addressing root causes and creating lasting positive impact.</p>
+      <div class="theory-column" id="column-right">
+        <div class="theory-content" id="content-right">
+          <!-- Right column content will be populated after left is full -->
+        </div>
       </div>
     </div>
 
-    <a href="../Theory-Pages/Systemic-Thinking-Expanded.html" class="explore-btn">Explore Theory ⮥</a>
+    <a href="../Project-Pages/Confidence-In-Community.html" class="explore-btn">Explore Project ⮥</a>
   </div>
 
   <script>
-    // Theory data in JSON format
+    // Theory data in JSON format - all paragraphs in sequence
     const theoryData = {
-      title: "Systemic Thinking<br>in Digital Design",
-      body: {
-        column1: [
-          "This theoretical framework explores the application of systemic thinking principles to digital design practice. By viewing design problems not as isolated issues but as interconnected systems, we can create more resilient, adaptive, and meaningful solutions.",
-          "The approach draws from diverse fields including cybernetics, ecology, and complexity theory to develop a holistic understanding of how design decisions ripple through interconnected systems.",
-          "At its core, systemic design recognizes that every design intervention exists within a network of relationships—technical, social, environmental, and economic. Understanding these relationships is crucial for creating designs that are not only functional but also sustainable and contextually appropriate."
-        ],
-        column2: [
-          "Key principles include feedback loops, emergent behavior, and non-linear causality. These concepts help designers anticipate second-order effects and design for adaptability rather than rigid control.",
-          "The methodology emphasizes continuous learning and iteration, treating each project as an opportunity to better understand the system it operates within. This requires humility, curiosity, and a willingness to challenge assumptions.",
-          "By adopting a systemic perspective, designers can move beyond solving surface-level problems to addressing root causes and creating lasting positive impact."
-        ]
-      }
+      title: "Designing for<br>Skin Confidence",
+      caption: {
+        series: "Working Theory",
+        date: "12.11.2025"
+      },
+      body: [
+        "This theoretical framework explores the application of systemic thinking principles to digital design practice. By viewing design problems not as isolated issues but as interconnected systems, we can create more resilient, adaptive, and meaningful solutions.",
+        
+        "The approach draws from diverse fields including cybernetics, ecology, and complexity theory to develop a holistic understanding of how design decisions ripple through interconnected systems.",
+        
+        "At its core, systemic design recognizes that every design intervention exists within a network of relationships—technical, social, environmental, and economic. Understanding these relationships is crucial for creating designs that are not only functional but also sustainable and contextually appropriate.",
+        
+        "Key principles include feedback loops, emergent behavior, and non-linear causality. These concepts help designers anticipate second-order effects and design for adaptability rather than rigid control.",
+        
+        "The methodology emphasizes continuous learning and iteration, treating each project as an opportunity to better understand the system it operates within. This requires humility, curiosity, and a willingness to challenge assumptions.",
+        
+        "By adopting a systemic perspective, designers can move beyond solving surface-level problems to addressing root causes and creating lasting positive impact.",
+        
+        "Systemic design also considers the temporal dimension—how systems evolve over time. This includes understanding path dependencies, legacy systems, and future scenarios that might affect the design's longevity.",
+        
+        "The practice involves mapping stakeholder relationships, identifying leverage points, and designing interventions that create positive feedback loops rather than temporary fixes.",
+        
+        "Ultimately, systemic thinking in digital design is about recognizing our role as participants in complex systems rather than external controllers of them.",
+        
+        "Additional content to demonstrate scrolling functionality. This paragraph shows how the text columns will balance content and provide scrollable areas when there is more text than can fit in the available space.",
+        
+        "The balancing algorithm ensures that both columns have approximately equal amounts of content, creating a visually harmonious layout that makes efficient use of the available space while maintaining readability.",
+        
+        "When content exceeds the visible area, scroll indicators will appear to guide users, providing a clear indication that there is more content to explore within each column."
+      ]
     };
+
+    // Function to handle scroll events
+    function handleContentScroll(contentElement) {
+      if (contentElement) {
+        const scrollBottom = contentElement.scrollHeight - contentElement.scrollTop - contentElement.clientHeight;
+        const isAtBottom = scrollBottom < 10; // 10px threshold
+        
+        if (isAtBottom) {
+          contentElement.classList.add('scrolled-to-bottom');
+        } else {
+          contentElement.classList.remove('scrolled-to-bottom');
+        }
+      }
+    }
+
+    // Function to balance content between columns
+    function balanceContent(paragraphs) {
+      const contentLeft = document.getElementById('content-left');
+      const contentRight = document.getElementById('content-right');
+      
+      // Clear existing content
+      contentLeft.innerHTML = '';
+      contentRight.innerHTML = '';
+      
+      // Calculate optimal split point (aim for roughly equal height)
+      const splitIndex = Math.ceil(paragraphs.length / 2);
+      
+      // Add paragraphs to left column
+      for (let i = 0; i < splitIndex; i++) {
+        const p = document.createElement('p');
+        p.innerHTML = paragraphs[i];
+        contentLeft.appendChild(p);
+      }
+      
+      // Add remaining paragraphs to right column
+      for (let i = splitIndex; i < paragraphs.length; i++) {
+        const p = document.createElement('p');
+        p.innerHTML = paragraphs[i];
+        contentRight.appendChild(p);
+      }
+      
+      // Add scroll event listeners to both columns
+      contentLeft.addEventListener('scroll', function() {
+        handleContentScroll(contentLeft);
+      });
+      
+      contentRight.addEventListener('scroll', function() {
+        handleContentScroll(contentRight);
+      });
+      
+      // Check initial scroll state for both columns
+      handleContentScroll(contentLeft);
+      handleContentScroll(contentRight);
+    }
 
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
       // Set theory content from JSON data
       document.getElementById('theory-title').innerHTML = theoryData.title;
       
-      const theoryBody = document.getElementById('theory-body');
-      const columns = theoryBody.querySelectorAll('.theory-column');
+      // Set caption content
+      document.querySelector('.caption-series').textContent = theoryData.caption.series;
+      document.querySelector('.caption-date').textContent = theoryData.caption.date;
       
-      // Populate first column
-      theoryData.body.column1.forEach(paragraph => {
-        const p = document.createElement('p');
-        p.innerHTML = paragraph;
-        columns[0].appendChild(p);
-      });
-      
-      // Populate second column
-      theoryData.body.column2.forEach(paragraph => {
-        const p = document.createElement('p');
-        p.innerHTML = paragraph;
-        columns[1].appendChild(p);
-      });
+      // Balance content between columns
+      balanceContent(theoryData.body);
 
       // Create gallery image placeholders
       const gallery = document.querySelector('.theory-gallery');
@@ -447,8 +566,6 @@
         console.log('Navigate to next theory page');
         // Example: window.location.href = 'next-theory.html';
       });
-
-      // Removed colophon functionality
     });
   </script>
 </body>
