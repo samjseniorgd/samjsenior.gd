@@ -187,6 +187,8 @@
       position: absolute;
       top: 0;
       left: 0;
+      object-fit: cover;
+      cursor: zoom-in;
     }
 
     .gallery-image.active {
@@ -430,7 +432,93 @@
       animation: none;
     }
 
-    /* Removed page-level scrollbar styles since we're back to section scrolling */
+    /* --- FULL SCREEN OVERLAY --- */
+    .fullscreen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.98);
+      display: none;
+      z-index: 1000;
+      cursor: zoom-out;
+      /* Use the same grid system as main page */
+      padding: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left);
+      grid-template-columns: repeat(var(--cols), 1fr);
+      grid-column-gap: var(--col-gap);
+      grid-template-rows: repeat(var(--rows), 1fr);
+      grid-row-gap: var(--row-gap);
+    }
+
+    .fullscreen-image-container {
+      grid-column: 1 / span 12; /* Full width - all columns */
+      grid-row: 1 / span 16; /* Takes first 16 rows */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .fullscreen-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      cursor: default;
+    }
+
+    .fullscreen-close {
+      grid-column: 1 / span 1; /* Positioned at column 1 */
+      grid-row: 17 / span 1; /* Row 17 */
+      display: flex;
+      align-items: flex-end;
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      color: #3a312d;
+      text-decoration: none;
+    }
+
+    .fullscreen-close:hover {
+      opacity: 0.7;
+    }
+
+    .fullscreen-navigation {
+      grid-column: 12 / span 1; /* Positioned at column 12 */
+      grid-row: 17 / span 1; /* Row 17 */
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      background: none;
+      padding: 0;
+      border: none;
+      color: #3a312d;
+      gap: 10px;
+    }
+
+    /* Ensure text doesn't stack vertically */
+    .fullscreen-navigation span,
+    .fullscreen-navigation button {
+      white-space: nowrap;
+    }
+
+    /* Hide regular gallery nav when fullscreen is active */
+    body.fullscreen-active .gallery-nav {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -445,12 +533,12 @@
       <a href="../Menu-Pages/contact.html" class="contact">Contact</a>
     </nav>
 
-    <!-- NEW SUB NAVIGATION -->
-   <div class="sub-nav">
-  <a href="../Menu-Pages/archive.html">Archive ↖</a>
-  <a href="../Project-Pages/Seed-Freedom-Campaign.html" class="sub-nav-btn next">Next →</a>
-  <a href="../Project-Pages/Confidence-In-Community.html" class="sub-nav-btn prev">Back ←</a>
-</div>
+    <!-- SUB NAVIGATION -->
+    <div class="sub-nav">
+      <a href="../Menu-Pages/archive.html">Archive ↖</a>
+      <a href="../Project-Pages/Seed-Freedom-Campaign.html" class="sub-nav-btn next">Next →</a>
+      <a href="../Project-Pages/Confidence-In-Community.html" class="sub-nav-btn prev">Back ←</a>
+    </div>
 
     <div class="project-gallery">
       <!-- Image placeholders will be dynamically added by JavaScript -->
@@ -461,55 +549,63 @@
       </div>
     </div>
 
-    <div class="project-title" id="project-title">Project Title</div>
+    <div class="project-title" id="project-title">Seafarm<br>Sonnets</div>
     <div class="project-body" id="project-body">
-      Project description will appear here.
+      Seafarm Sonnets is an exploration of the poetic relationship between marine agriculture and coastal ecosystems. Through a series of ten visual essays, this project documents the rhythmic patterns of aquaculture and the delicate balance between human cultivation and natural marine cycles.<br><br>
+      
+      Each "sonnet" represents a different aspect of seafarming—from the geometric precision of oyster beds to the fluid movements of kelp forests, from the harvesting rituals of coastal communities to the microscopic world of phytoplankton. The work combines scientific observation with artistic interpretation, creating a visual poetry that speaks to both the practical and aesthetic dimensions of marine cultivation.<br><br>
+      
+      The project was developed over two years of coastal fieldwork, documenting traditional and modern seafarming practices across different marine environments. Each visualization serves as both documentation and meditation, inviting viewers to consider the complex relationships between human needs, marine life, and coastal ecosystems.
     </div>
 
     <div class="colophon" id="colophon">Colophon ⮥</div>
   </div>
 
   <script>
-    // Project data in JSON format
+    // Project data for Seafarm Sonnets
     const projectData = {
       title: "Seafarm<br>Sonnets",
-      body: "This project explores the intersection of data visualization and systemic thinking. Through a series of interactive diagrams and visual models, it examines how complex systems can be represented in ways that are both informative and aesthetically engaging.<br><br>The work draws on principles from network theory, information design, and cognitive science to create visualizations that reveal hidden patterns and relationships. Each visualization is designed to be both a tool for analysis and an object of contemplation.<br><br>The project includes ten distinct visualizations, each focusing on a different aspect of systemic relationships - from social networks to ecological systems to information flows.",
+      body: `Seafarm Sonnets is an exploration of the poetic relationship between marine agriculture and coastal ecosystems. Through a series of ten visual essays, this project documents the rhythmic patterns of aquaculture and the delicate balance between human cultivation and natural marine cycles.<br><br>
+      
+      Each "sonnet" represents a different aspect of seafarming—from the geometric precision of oyster beds to the fluid movements of kelp forests, from the harvesting rituals of coastal communities to the microscopic world of phytoplankton. The work combines scientific observation with artistic interpretation, creating a visual poetry that speaks to both the practical and aesthetic dimensions of marine cultivation.<br><br>
+      
+      The project was developed over two years of coastal fieldwork, documenting traditional and modern seafarming practices across different marine environments. Each visualization serves as both documentation and meditation, inviting viewers to consider the complex relationships between human needs, marine life, and coastal ecosystems.`,
       colophon: {
         projectScope: {
           outcomes: [
-            "Interactive data visualization platform",
-            "Educational resource for systemic thinking",
-            "Aesthetic exploration of complex networks",
-            "Open-source framework for future projects"
+            "Series of 10 visual essays on marine agriculture",
+            "Documentation of traditional and modern seafarming practices",
+            "Artistic interpretation of coastal ecosystem relationships",
+            "Educational resource on sustainable aquaculture"
           ],
           features: [
-            "Responsive design for multiple devices",
-            "Real-time data processing",
-            "Custom visualization algorithms",
-            "Accessibility-focused interface",
-            "Modular component architecture",
-            "Cross-browser compatibility"
+            "High-resolution marine photography and videography",
+            "Scientific documentation of aquaculture techniques",
+            "Artistic interpretation of marine patterns and rhythms",
+            "Field research across multiple coastal environments",
+            "Integration of traditional knowledge with modern science",
+            "Accessible presentation of complex ecological relationships"
           ]
         },
         specifications: [
           { asset: "PP Right Grotesk", origin: "Pangram Pangram Foundry" },
           { asset: "PP Right Slab", origin: "Pangram Pangram Foundry" },
-          { asset: "HTML5 Canvas", origin: "W3C" },
-          { asset: "JavaScript ES6+", origin: "ECMA International" },
-          { asset: "WebGL", origin: "Khronos Group" },
-          { asset: "CSS Grid & Flexbox", origin: "W3C" },
-          { asset: "Node.js", origin: "OpenJS Foundation" },
-          { asset: "Git Version Control", origin: "Linux Foundation" }
+          { asset: "Marine Photography", origin: "Coastal Fieldwork" },
+          { asset: "Underwater Videography", origin: "Marine Documentation" },
+          { asset: "Scientific Illustration", origin: "Research Methodology" },
+          { asset: "Coastal Field Notes", origin: "Primary Research" },
+          { asset: "Traditional Knowledge", origin: "Coastal Communities" },
+          { asset: "Ecological Data", origin: "Marine Research" }
         ],
         disciplines: [
-          "Information Design",
-          "Data Visualization",
-          "Interaction Design",
-          "Web Development",
-          "Systemic Thinking",
-          "Typography",
-          "User Experience Design",
-          "Accessibility Engineering"
+          "Marine Documentation",
+          "Environmental Art",
+          "Scientific Illustration",
+          "Coastal Ecology",
+          "Photography",
+          "Field Research",
+          "Visual Storytelling",
+          "Environmental Education"
         ]
       }
     };
@@ -520,19 +616,13 @@
       document.getElementById('project-title').innerHTML = projectData.title;
       document.getElementById('project-body').innerHTML = projectData.body;
 
-      // Create gallery image placeholders
-      const gallery = document.querySelector('.project-gallery');
-      for (let i = 0; i < 10; i++) {
-        const placeholder = document.createElement('div');
-        placeholder.className = 'gallery-image';
-        if (i === 0) placeholder.classList.add('active');
-        gallery.prepend(placeholder);
-      }
+      // Initialize gallery with images
+      initializeGallery();
 
       // Set up gallery navigation
-      const prevBtn = document.querySelector('.nav-btn.prev');
-      const nextBtn = document.querySelector('.nav-btn.next');
-      const counter = document.querySelector('.image-counter');
+      const prevBtn = document.querySelector('.gallery-nav .nav-btn.prev');
+      const nextBtn = document.querySelector('.gallery-nav .nav-btn.next');
+      const counter = document.querySelector('.gallery-nav .image-counter');
       let currentIndex = 0;
 
       function updateGallery() {
@@ -548,12 +638,14 @@
         counter.textContent = `${currentIndex + 1} / 10`;
       }
 
-      prevBtn.addEventListener('click', function() {
+      prevBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
         currentIndex = (currentIndex - 1 + 10) % 10;
         updateGallery();
       });
 
-      nextBtn.addEventListener('click', function() {
+      nextBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
         currentIndex = (currentIndex + 1) % 10;
         updateGallery();
       });
@@ -693,9 +785,9 @@
         html += '<div class="two-column-section">';
         html += '<h3>Specifications</h3>';
         
-        // Left column - Tools & Resources
+        // Left column - Methods & Documentation
         html += '<div class="column">';
-        html += '<h4>Tools & Resources</h4>';
+        html += '<h4>Methods & Documentation</h4>';
         html += '<div class="column-content">';
         html += '<ul class="colophon-list">';
         colophon.specifications.forEach(spec => {
@@ -721,7 +813,7 @@
         
         // Special Features section
         html += '<div class="colophon-section">';
-        html += '<h3>Special Features</h3>';
+        html += '<h3>Project Features</h3>';
         html += '<ul class="colophon-list">';
         colophon.projectScope.features.forEach(feature => {
           html += `<li>${feature}</li>`;
@@ -732,6 +824,157 @@
         html += '</div>';
         
         return html;
+      }
+
+      // Gallery initialization with fullscreen functionality
+      function initializeGallery() {
+        const gallery = document.querySelector('.project-gallery');
+        
+        // Create gallery images with placeholders
+        for (let i = 0; i < 10; i++) {
+          const placeholder = document.createElement('div');
+          placeholder.className = 'gallery-image';
+          placeholder.style.backgroundColor = getPlaceholderColor(i);
+          if (i === 0) placeholder.classList.add('active');
+          
+          // Add click event for fullscreen - pass the correct index
+          placeholder.addEventListener('click', () => openFullscreen(i));
+          
+          gallery.prepend(placeholder);
+        }
+
+        // Create fullscreen overlay
+        const fullscreenOverlay = document.createElement('div');
+        fullscreenOverlay.className = 'fullscreen-overlay';
+        
+        // Create container for image
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'fullscreen-image-container';
+        
+        const fullscreenImage = document.createElement('div');
+        fullscreenImage.className = 'fullscreen-image';
+        
+        // Create separate close button at column 1
+        const fullscreenClose = document.createElement('button');
+        fullscreenClose.className = 'fullscreen-close';
+        fullscreenClose.innerHTML = 'Back ←';
+        
+        // Create navigation at column 12
+        const fullscreenNavigation = document.createElement('div');
+        fullscreenNavigation.className = 'fullscreen-navigation';
+        fullscreenNavigation.innerHTML = `
+          <button class="nav-btn prev">←</button>
+          <span class="image-counter">1 / 10</span>
+          <button class="nav-btn next">→</button>
+        `;
+        
+        imageContainer.appendChild(fullscreenImage);
+        fullscreenOverlay.appendChild(imageContainer);
+        fullscreenOverlay.appendChild(fullscreenClose);
+        fullscreenOverlay.appendChild(fullscreenNavigation);
+        document.body.appendChild(fullscreenOverlay);
+
+        // Fullscreen functionality
+        function openFullscreen(index) {
+          // Set the current index to match the clicked image
+          currentIndex = index;
+          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          fullscreenOverlay.style.display = 'grid';
+          document.body.classList.add('fullscreen-active');
+          updateFullscreenCounter();
+        }
+
+        function closeFullscreen() {
+          fullscreenOverlay.style.display = 'none';
+          document.body.classList.remove('fullscreen-active');
+        }
+
+        function updateFullscreenCounter() {
+          // Update both counters to stay in sync
+          const galleryCounter = document.querySelector('.gallery-nav .image-counter');
+          const fullscreenCounter = fullscreenNavigation.querySelector('.image-counter');
+          
+          galleryCounter.textContent = `${currentIndex + 1} / 10`;
+          fullscreenCounter.textContent = `${currentIndex + 1} / 10`;
+        }
+
+        // Event listeners for fullscreen navigation
+        fullscreenNavigation.querySelector('.prev').addEventListener('click', function(e) {
+          e.stopPropagation();
+          currentIndex = (currentIndex - 1 + 10) % 10;
+          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          updateFullscreenCounter();
+        });
+
+        fullscreenNavigation.querySelector('.next').addEventListener('click', function(e) {
+          e.stopPropagation();
+          currentIndex = (currentIndex + 1) % 10;
+          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          updateFullscreenCounter();
+        });
+
+        // Event listeners
+        fullscreenClose.addEventListener('click', closeFullscreen);
+        fullscreenOverlay.addEventListener('click', (e) => {
+          if (e.target === fullscreenOverlay) closeFullscreen();
+        });
+
+        // Navigation with keyboard
+        document.addEventListener('keydown', (e) => {
+          if (fullscreenOverlay.style.display === 'grid') {
+            if (e.key === 'Escape') closeFullscreen();
+            if (e.key === 'ArrowLeft') {
+              currentIndex = (currentIndex - 1 + 10) % 10;
+              fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+              updateFullscreenCounter();
+            }
+            if (e.key === 'ArrowRight') {
+              currentIndex = (currentIndex + 1) % 10;
+              fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+              updateFullscreenCounter();
+            }
+          }
+        });
+
+        // Also allow click navigation on the image itself
+        fullscreenImage.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentIndex = (currentIndex + 1) % 10;
+          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          updateFullscreenCounter();
+        });
+
+        // Optional: Add swipe support for touch devices
+        let touchStartX = 0;
+        fullscreenOverlay.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        });
+
+        fullscreenOverlay.addEventListener('touchend', (e) => {
+          const touchEndX = e.changedTouches[0].screenX;
+          const diffX = touchStartX - touchEndX;
+
+          if (Math.abs(diffX) > 50) { // Minimum swipe distance
+            if (diffX > 0) {
+              // Swipe left - next
+              currentIndex = (currentIndex + 1) % 10;
+            } else {
+              // Swipe right - previous
+              currentIndex = (currentIndex - 1 + 10) % 10;
+            }
+            fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+            updateFullscreenCounter();
+          }
+        });
+      }
+
+      // Helper function to generate placeholder colors
+      function getPlaceholderColor(index) {
+        const colors = [
+          '#e0e0e0', '#d6d6d6', '#cccccc', '#c2c2c2', '#b8b8b8',
+          '#aeaeae', '#a4a4a4', '#9a9a9a', '#909090', '#868686'
+        ];
+        return colors[index % colors.length];
       }
     });
   </script>
