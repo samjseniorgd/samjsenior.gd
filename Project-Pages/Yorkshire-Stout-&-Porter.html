@@ -187,6 +187,8 @@
       position: absolute;
       top: 0;
       left: 0;
+      object-fit: cover;
+      cursor: zoom-in;
     }
 
     .gallery-image.active {
@@ -430,7 +432,93 @@
       animation: none;
     }
 
-    /* Removed page-level scrollbar styles since we're back to section scrolling */
+    /* --- FULL SCREEN OVERLAY --- */
+    .fullscreen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.98);
+      display: none;
+      z-index: 1000;
+      cursor: zoom-out;
+      /* Use the same grid system as main page */
+      padding: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left);
+      grid-template-columns: repeat(var(--cols), 1fr);
+      grid-column-gap: var(--col-gap);
+      grid-template-rows: repeat(var(--rows), 1fr);
+      grid-row-gap: var(--row-gap);
+    }
+
+    .fullscreen-image-container {
+      grid-column: 1 / span 12; /* Full width - all columns */
+      grid-row: 1 / span 16; /* Takes first 16 rows */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .fullscreen-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      cursor: default;
+    }
+
+    .fullscreen-close {
+      grid-column: 1 / span 1; /* Positioned at column 1 */
+      grid-row: 17 / span 1; /* Row 17 */
+      display: flex;
+      align-items: flex-end;
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      color: #3a312d;
+      text-decoration: none;
+    }
+
+    .fullscreen-close:hover {
+      opacity: 0.7;
+    }
+
+    .fullscreen-navigation {
+      grid-column: 12 / span 1; /* Positioned at column 12 */
+      grid-row: 17 / span 1; /* Row 17 */
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      font-family: 'PP Right Slab';
+      font-weight: 500;
+      font-size: 15pt;
+      line-height: 15pt;
+      letter-spacing: 0;
+      background: none;
+      padding: 0;
+      border: none;
+      color: #3a312d;
+      gap: 10px;
+    }
+
+    /* Ensure text doesn't stack vertically */
+    .fullscreen-navigation span,
+    .fullscreen-navigation button {
+      white-space: nowrap;
+    }
+
+    /* Hide regular gallery nav when fullscreen is active */
+    body.fullscreen-active .gallery-nav {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -447,10 +535,10 @@
 
     <!-- NEW SUB NAVIGATION -->
     <div class="sub-nav">
-  <a href="../Menu-Pages/archive.html">Archive ↖</a>
-  <a href="../Project-Pages/Tea-Card-Typology.html" class="sub-nav-btn next">Next →</a>
-  <a href="../Project-Pages/Forgotten-Trams.html" class="sub-nav-btn prev">Back ←</a>
-</div>
+      <a href="../Menu-Pages/archive.html">Archive ↖</a>
+      <a href="../Project-Pages/Tea-Card-Typology.html" class="sub-nav-btn next">Next →</a>
+      <a href="../Project-Pages/Forgotten-Trams.html" class="sub-nav-btn prev">Back ←</a>
+    </div>
 
     <div class="project-gallery">
       <!-- Image placeholders will be dynamically added by JavaScript -->
@@ -461,16 +549,16 @@
       </div>
     </div>
 
-    <div class="project-title" id="project-title">Project Title</div>
+    <div class="project-title" id="project-title">Yorkshire<br>Stout & Porter</div>
     <div class="project-body" id="project-body">
-      Project description will appear here.
+      This project explores the intersection of data visualization and systemic thinking. Through a series of interactive diagrams and visual models, it examines how complex systems can be represented in ways that are both informative and aesthetically engaging.<br><br>The work draws on principles from network theory, information design, and cognitive science to create visualizations that reveal hidden patterns and relationships. Each visualization is designed to be both a tool for analysis and an object of contemplation.<br><br>The project includes ten distinct visualizations, each focusing on a different aspect of systemic relationships - from social networks to ecological systems to information flows.
     </div>
 
     <div class="colophon" id="colophon">Colophon ⮥</div>
   </div>
 
   <script>
-    // Project data in JSON format
+    // Project data for Yorkshire Stout & Porter
     const projectData = {
       title: "Yorkshire<br>Stout & Porter",
       body: "This project explores the intersection of data visualization and systemic thinking. Through a series of interactive diagrams and visual models, it examines how complex systems can be represented in ways that are both informative and aesthetically engaging.<br><br>The work draws on principles from network theory, information design, and cognitive science to create visualizations that reveal hidden patterns and relationships. Each visualization is designed to be both a tool for analysis and an object of contemplation.<br><br>The project includes ten distinct visualizations, each focusing on a different aspect of systemic relationships - from social networks to ecological systems to information flows.",
@@ -514,46 +602,45 @@
       }
     };
 
+    // Global variables for gallery state
+    let currentIndex = 0;
+    let galleryImages = [];
+
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
       // Set project content from JSON data
       document.getElementById('project-title').innerHTML = projectData.title;
       document.getElementById('project-body').innerHTML = projectData.body;
 
-      // Create gallery image placeholders
-      const gallery = document.querySelector('.project-gallery');
-      for (let i = 0; i < 10; i++) {
-        const placeholder = document.createElement('div');
-        placeholder.className = 'gallery-image';
-        if (i === 0) placeholder.classList.add('active');
-        gallery.prepend(placeholder);
-      }
+      // Initialize gallery with images
+      initializeGallery();
 
       // Set up gallery navigation
-      const prevBtn = document.querySelector('.nav-btn.prev');
-      const nextBtn = document.querySelector('.nav-btn.next');
-      const counter = document.querySelector('.image-counter');
-      let currentIndex = 0;
+      const prevBtn = document.querySelector('.gallery-nav .nav-btn.prev');
+      const nextBtn = document.querySelector('.gallery-nav .nav-btn.next');
+      const counter = document.querySelector('.gallery-nav .image-counter');
 
       function updateGallery() {
         // Hide all images
-        document.querySelectorAll('.gallery-image').forEach(img => {
+        galleryImages.forEach(img => {
           img.classList.remove('active');
         });
         
         // Show current image
-        document.querySelectorAll('.gallery-image')[currentIndex].classList.add('active');
+        galleryImages[currentIndex].classList.add('active');
         
         // Update counter
         counter.textContent = `${currentIndex + 1} / 10`;
       }
 
-      prevBtn.addEventListener('click', function() {
+      prevBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
         currentIndex = (currentIndex - 1 + 10) % 10;
         updateGallery();
       });
 
-      nextBtn.addEventListener('click', function() {
+      nextBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
         currentIndex = (currentIndex + 1) % 10;
         updateGallery();
       });
@@ -732,6 +819,166 @@
         html += '</div>';
         
         return html;
+      }
+
+      // Gallery initialization with fullscreen functionality
+      function initializeGallery() {
+        const gallery = document.querySelector('.project-gallery');
+        
+        // Create gallery images with placeholders
+        for (let i = 0; i < 10; i++) {
+          const placeholder = document.createElement('div');
+          placeholder.className = 'gallery-image';
+          placeholder.style.backgroundColor = getPlaceholderColor(i);
+          placeholder.dataset.index = i; // Store index for reference
+          
+          // Add click event for fullscreen - pass the correct index
+          placeholder.addEventListener('click', () => openFullscreen(i));
+          
+          gallery.prepend(placeholder);
+          galleryImages.push(placeholder);
+        }
+
+        // Create fullscreen overlay
+        const fullscreenOverlay = document.createElement('div');
+        fullscreenOverlay.className = 'fullscreen-overlay';
+        
+        // Create container for image
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'fullscreen-image-container';
+        
+        const fullscreenImage = document.createElement('div');
+        fullscreenImage.className = 'fullscreen-image';
+        
+        // Create separate close button at column 1
+        const fullscreenClose = document.createElement('button');
+        fullscreenClose.className = 'fullscreen-close';
+        fullscreenClose.innerHTML = 'Back ←';
+        
+        // Create navigation at column 12
+        const fullscreenNavigation = document.createElement('div');
+        fullscreenNavigation.className = 'fullscreen-navigation';
+        fullscreenNavigation.innerHTML = `
+          <button class="nav-btn prev">←</button>
+          <span class="image-counter">1 / 10</span>
+          <button class="nav-btn next">→</button>
+        `;
+        
+        imageContainer.appendChild(fullscreenImage);
+        fullscreenOverlay.appendChild(imageContainer);
+        fullscreenOverlay.appendChild(fullscreenClose);
+        fullscreenOverlay.appendChild(fullscreenNavigation);
+        document.body.appendChild(fullscreenOverlay);
+
+        // Fullscreen functionality
+        function openFullscreen(index) {
+          // Set the current index to match the clicked image
+          currentIndex = index;
+          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          fullscreenOverlay.style.display = 'grid';
+          document.body.classList.add('fullscreen-active');
+          updateFullscreenCounter();
+          updateGallery(); // Ensure gallery view is updated
+        }
+
+        function closeFullscreen() {
+          fullscreenOverlay.style.display = 'none';
+          document.body.classList.remove('fullscreen-active');
+          updateGallery(); // Ensure gallery view is updated after closing
+        }
+
+        function updateFullscreenCounter() {
+          // Update both counters to stay in sync
+          const galleryCounter = document.querySelector('.gallery-nav .image-counter');
+          const fullscreenCounter = fullscreenNavigation.querySelector('.image-counter');
+          
+          galleryCounter.textContent = `${currentIndex + 1} / 10`;
+          fullscreenCounter.textContent = `${currentIndex + 1} / 10`;
+        }
+
+        // Event listeners for fullscreen navigation
+        fullscreenNavigation.querySelector('.prev').addEventListener('click', function(e) {
+          e.stopPropagation();
+          currentIndex = (currentIndex - 1 + 10) % 10;
+          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          updateFullscreenCounter();
+          updateGallery(); // Update gallery view to match
+        });
+
+        fullscreenNavigation.querySelector('.next').addEventListener('click', function(e) {
+          e.stopPropagation();
+          currentIndex = (currentIndex + 1) % 10;
+          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          updateFullscreenCounter();
+          updateGallery(); // Update gallery view to match
+        });
+
+        // Event listeners
+        fullscreenClose.addEventListener('click', closeFullscreen);
+        fullscreenOverlay.addEventListener('click', (e) => {
+          if (e.target === fullscreenOverlay) closeFullscreen();
+        });
+
+        // Navigation with keyboard
+        document.addEventListener('keydown', (e) => {
+          if (fullscreenOverlay.style.display === 'grid') {
+            if (e.key === 'Escape') closeFullscreen();
+            if (e.key === 'ArrowLeft') {
+              currentIndex = (currentIndex - 1 + 10) % 10;
+              fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+              updateFullscreenCounter();
+              updateGallery(); // Update gallery view to match
+            }
+            if (e.key === 'ArrowRight') {
+              currentIndex = (currentIndex + 1) % 10;
+              fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+              updateFullscreenCounter();
+              updateGallery(); // Update gallery view to match
+            }
+          }
+        });
+
+        // Also allow click navigation on the image itself
+        fullscreenImage.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentIndex = (currentIndex + 1) % 10;
+          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          updateFullscreenCounter();
+          updateGallery(); // Update gallery view to match
+        });
+
+        // Optional: Add swipe support for touch devices
+        let touchStartX = 0;
+        fullscreenOverlay.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        });
+
+        fullscreenOverlay.addEventListener('touchend', (e) => {
+          const touchEndX = e.changedTouches[0].screenX;
+          const diffX = touchStartX - touchEndX;
+
+          if (Math.abs(diffX) > 50) { // Minimum swipe distance
+            if (diffX > 0) {
+              // Swipe left - next
+              currentIndex = (currentIndex + 1) % 10;
+            } else {
+              // Swipe right - previous
+              currentIndex = (currentIndex - 1 + 10) % 10;
+            }
+            fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+            updateFullscreenCounter();
+            updateGallery(); // Update gallery view to match
+          }
+        });
+      }
+
+      // Helper function to generate placeholder colors
+      function getPlaceholderColor(index) {
+        const colors = [
+          '#e0e0e0', '#d6d6d6', '#cccccc', '#c2c2c2', '#b8b8b8',
+          '#aeaeae', '#a4a4a4', '#9a9a9a', '#909090', '#868686'
+        ];
+        return colors[index % colors.length];
       }
     });
   </script>
