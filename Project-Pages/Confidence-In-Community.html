@@ -610,6 +610,10 @@
       }
     };
 
+    // Global variables for gallery state
+    let currentIndex = 0;
+    let galleryImages = [];
+
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
       // Set project content from JSON data
@@ -623,16 +627,15 @@
       const prevBtn = document.querySelector('.gallery-nav .nav-btn.prev');
       const nextBtn = document.querySelector('.gallery-nav .nav-btn.next');
       const counter = document.querySelector('.gallery-nav .image-counter');
-      let currentIndex = 0;
 
       function updateGallery() {
         // Hide all images
-        document.querySelectorAll('.gallery-image').forEach(img => {
+        galleryImages.forEach(img => {
           img.classList.remove('active');
         });
         
         // Show current image
-        document.querySelectorAll('.gallery-image')[currentIndex].classList.add('active');
+        galleryImages[currentIndex].classList.add('active');
         
         // Update counter
         counter.textContent = `${currentIndex + 1} / 10`;
@@ -835,12 +838,13 @@
           const placeholder = document.createElement('div');
           placeholder.className = 'gallery-image';
           placeholder.style.backgroundColor = getPlaceholderColor(i);
-          if (i === 0) placeholder.classList.add('active');
+          placeholder.dataset.index = i; // Store index for reference
           
           // Add click event for fullscreen - pass the correct index
           placeholder.addEventListener('click', () => openFullscreen(i));
           
           gallery.prepend(placeholder);
+          galleryImages.push(placeholder);
         }
 
         // Create fullscreen overlay
@@ -882,11 +886,13 @@
           fullscreenOverlay.style.display = 'grid';
           document.body.classList.add('fullscreen-active');
           updateFullscreenCounter();
+          updateGallery(); // Ensure gallery view is updated
         }
 
         function closeFullscreen() {
           fullscreenOverlay.style.display = 'none';
           document.body.classList.remove('fullscreen-active');
+          updateGallery(); // Ensure gallery view is updated after closing
         }
 
         function updateFullscreenCounter() {
@@ -904,6 +910,7 @@
           currentIndex = (currentIndex - 1 + 10) % 10;
           fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
           updateFullscreenCounter();
+          updateGallery(); // Update gallery view to match
         });
 
         fullscreenNavigation.querySelector('.next').addEventListener('click', function(e) {
@@ -911,6 +918,7 @@
           currentIndex = (currentIndex + 1) % 10;
           fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
           updateFullscreenCounter();
+          updateGallery(); // Update gallery view to match
         });
 
         // Event listeners
@@ -927,11 +935,13 @@
               currentIndex = (currentIndex - 1 + 10) % 10;
               fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
               updateFullscreenCounter();
+              updateGallery(); // Update gallery view to match
             }
             if (e.key === 'ArrowRight') {
               currentIndex = (currentIndex + 1) % 10;
               fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
               updateFullscreenCounter();
+              updateGallery(); // Update gallery view to match
             }
           }
         });
@@ -942,6 +952,7 @@
           currentIndex = (currentIndex + 1) % 10;
           fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
           updateFullscreenCounter();
+          updateGallery(); // Update gallery view to match
         });
 
         // Optional: Add swipe support for touch devices
@@ -964,6 +975,7 @@
             }
             fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
             updateFullscreenCounter();
+            updateGallery(); // Update gallery view to match
           }
         });
       }
