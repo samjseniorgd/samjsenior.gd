@@ -608,7 +608,22 @@
     const projectData = {
       title: "Confidence<br>In Community",
       slug: "Confidence-In-Community", // Title case folder name
-      contentCount: 13, // Changed from 10 to 12
+      contentCount: 13, // Total number of content items
+      contentTypes: [
+        "image",  // 001
+        "image",  // 002
+        "image",  // 003
+        "image",  // 004
+        "image",  // 005
+        "video",  // 006 - Video example
+        "image",  // 007
+        "image",  // 008
+        "image",  // 009
+        "image",  // 010
+        "image",  // 011 - Image example (previously thought to be video)
+        "video",  // 012
+        "video"   // 013
+      ],
       body: `Confidence in Community is a participatory design project that explores how public spaces can foster social connection and collective agency. Through a series of community workshops and interactive installations, the project examines the relationship between built environments and social dynamics.<br><br>
       
       The work centers around a modular seating system designed for public spaces, where each element can be rearranged by community members to create different configurations that support various social interactions—from intimate conversations to larger gatherings. The project documents how these physical interventions impact social behavior and community engagement.<br><br>
@@ -878,16 +893,17 @@
         const gallery = document.querySelector('.project-gallery');
         const galleryNavCounter = document.querySelector('.gallery-nav .image-counter');
         
-        // Update counter to show 12 items
+        // Update counter to show total items
         galleryNavCounter.textContent = `1 / ${projectData.contentCount}`;
         
         // Clear gallery
         gallery.innerHTML = '';
         
-        // Create gallery content (images and videos)
+        // Create gallery content (images and videos based on contentTypes array)
         for (let i = 0; i < projectData.contentCount; i++) {
           const imgNumber = String(i + 1).padStart(3, '0'); // 001, 002, 003...
-          const isVideo = i >= 10; // Last 2 items are videos (items 11-12)
+          const contentType = projectData.contentTypes[i]; // "image" or "video"
+          const isVideo = contentType === "video";
           
           let contentElement;
           
@@ -943,6 +959,7 @@
           
           contentElement.dataset.index = i;
           contentElement.dataset.isVideo = isVideo;
+          contentElement.dataset.contentType = contentType;
           
           // Add click event for fullscreen
           contentElement.addEventListener('click', () => openFullscreen(i));
@@ -952,7 +969,8 @@
           galleryContent.push({
             element: contentElement,
             index: i,
-            isVideo: isVideo
+            isVideo: isVideo,
+            contentType: contentType
           });
         }
 
