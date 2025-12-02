@@ -178,7 +178,7 @@
       overflow: hidden;
     }
 
-    .gallery-image {
+    .gallery-content {
       width: 100%;
       height: 100%;
       background: #eeeeee;
@@ -191,8 +191,14 @@
       cursor: zoom-in;
     }
 
-    .gallery-image.active {
+    .gallery-content.active {
       display: block;
+    }
+
+    /* Video specific styles */
+    .gallery-content.video {
+      object-fit: contain;
+      background: #000;
     }
 
     .gallery-nav {
@@ -451,9 +457,9 @@
       grid-row-gap: var(--row-gap);
     }
 
-    .fullscreen-image-container {
+    .fullscreen-content-container {
       grid-column: 1 / span 12; /* Full width - all columns */
-      grid-row: 1 / span 17; /* Takes first 16 rows */
+      grid-row: 1 / span 17; /* Takes first 17 rows */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -462,7 +468,7 @@
       position: relative;
     }
 
-    .fullscreen-image {
+    .fullscreen-content {
       width: 100%;
       height: 100%;
       object-fit: contain;
@@ -470,8 +476,8 @@
     }
 
     .fullscreen-close {
-      grid-column: 1 / span 1; /* Positioned at column 1 */
-      grid-row: 18 / span 1; /* Row 17 */
+      grid-column: 2 / span 1; /* Positioned at column 1 */
+      grid-row: 18 / span 1; /* Row 18 */
       display: flex;
       align-items: flex-end;
       font-family: 'PP Right Slab';
@@ -492,8 +498,8 @@
     }
 
     .fullscreen-navigation {
-      grid-column: 12 / span 1; /* Positioned at column 12 */
-      grid-row: 18 / span 1; /* Row 17 */
+      grid-column: 11 / span 1; /* Positioned at column 12 */
+      grid-row: 18 / span 1; /* Row 18 */
       display: flex;
       justify-content: flex-end;
       align-items: flex-end;
@@ -519,6 +525,42 @@
     body.fullscreen-active .gallery-nav {
       display: none;
     }
+
+    /* Video controls */
+    video {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Video play button overlay */
+    .video-play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 5;
+      transition: all 0.3s ease;
+    }
+
+    .video-play-button:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .video-play-button::after {
+      content: '▶';
+      font-size: 30px;
+      color: #3a312d;
+      margin-left: 5px;
+    }
   </style>
 </head>
 <body>
@@ -533,15 +575,15 @@
       <a href="../Menu-Pages/contact.html" class="contact">Contact</a>
     </nav>
 
-    <!-- NEW SUB NAVIGATION -->
-   <div class="sub-nav">
-  <a href="../Menu-Pages/archive.html">Archive ↖</a>
-  <a href="../Project-Pages/Forgotten-Trams.html" class="sub-nav-btn next">Next →</a>
-  <a href="../Project-Pages/Seafarm-Sonnets.html" class="sub-nav-btn prev">Back ←</a>
-</div>
+    <!-- SUB NAVIGATION -->
+    <div class="sub-nav">
+      <a href="../Menu-Pages/archive.html">Archive ↖</a>
+      <a href="../Project-Pages/Forgotten-Trams.html" class="sub-nav-btn next">Next →</a>
+      <a href="../Project-Pages/Seafarm-Sonnets.html" class="sub-nav-btn prev">Back ←</a>
+    </div>
 
     <div class="project-gallery">
-      <!-- Image placeholders will be dynamically added by JavaScript -->
+      <!-- Content placeholders will be dynamically added by JavaScript -->
       <div class="gallery-nav">
         <button class="nav-btn prev">←</button>
         <span class="image-counter">1 / 10</span>
@@ -558,9 +600,23 @@
   </div>
 
   <script>
-    // Project data for Seed Freedom Campaign
+    // Project data for Seed Freedom Campaign - UPDATED WITH CONTENT TYPES
     const projectData = {
       title: "Seed Freedom<br>Campaign",
+      slug: "Seed-Freedom-Campaign", // Title case folder name
+      contentCount: 10, // Total number of content items
+      contentTypes: [
+        "image",  // 001
+        "image",  // 002
+        "image",  // 003
+        "image",  // 004
+        "image",  // 005
+        "video",  // 006 - Video example
+        "image",  // 007
+        "image",  // 008
+        "image",  // 009
+        "video"   // 010
+      ],
       body: "This project explores the intersection of data visualization and systemic thinking. Through a series of interactive diagrams and visual models, it examines how complex systems can be represented in ways that are both informative and aesthetically engaging.<br><br>The work draws on principles from network theory, information design, and cognitive science to create visualizations that reveal hidden patterns and relationships. Each visualization is designed to be both a tool for analysis and an object of contemplation.<br><br>The project includes ten distinct visualizations, each focusing on a different aspect of systemic relationships - from social networks to ecological systems to information flows.",
       colophon: {
         projectScope: {
@@ -604,7 +660,7 @@
 
     // Global variables for gallery state
     let currentIndex = 0;
-    let galleryImages = [];
+    let galleryContent = [];
 
     // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
@@ -612,7 +668,7 @@
       document.getElementById('project-title').innerHTML = projectData.title;
       document.getElementById('project-body').innerHTML = projectData.body;
 
-      // Initialize gallery with images
+      // Initialize gallery with content
       initializeGallery();
 
       // Set up gallery navigation
@@ -621,27 +677,27 @@
       const counter = document.querySelector('.gallery-nav .image-counter');
 
       function updateGallery() {
-        // Hide all images
-        galleryImages.forEach(img => {
-          img.classList.remove('active');
+        // Hide all content
+        galleryContent.forEach(content => {
+          content.element.classList.remove('active');
         });
         
-        // Show current image
-        galleryImages[currentIndex].classList.add('active');
+        // Show current content
+        galleryContent[currentIndex].element.classList.add('active');
         
         // Update counter
-        counter.textContent = `${currentIndex + 1} / 10`;
+        counter.textContent = `${currentIndex + 1} / ${projectData.contentCount}`;
       }
 
       prevBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        currentIndex = (currentIndex - 1 + 10) % 10;
+        currentIndex = (currentIndex - 1 + projectData.contentCount) % projectData.contentCount;
         updateGallery();
       });
 
       nextBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        currentIndex = (currentIndex + 1) % 10;
+        currentIndex = (currentIndex + 1) % projectData.contentCount;
         updateGallery();
       });
 
@@ -824,31 +880,110 @@
       // Gallery initialization with fullscreen functionality
       function initializeGallery() {
         const gallery = document.querySelector('.project-gallery');
+        const galleryNavCounter = document.querySelector('.gallery-nav .image-counter');
         
-        // Create gallery images with placeholders
-        for (let i = 0; i < 10; i++) {
-          const placeholder = document.createElement('div');
-          placeholder.className = 'gallery-image';
-          placeholder.style.backgroundColor = getPlaceholderColor(i);
-          placeholder.dataset.index = i; // Store index for reference
+        // Update counter to show total items
+        galleryNavCounter.textContent = `1 / ${projectData.contentCount}`;
+        
+        // Clear gallery
+        gallery.innerHTML = '';
+        
+        // Create gallery content (images and videos based on contentTypes array)
+        for (let i = 0; i < projectData.contentCount; i++) {
+          const imgNumber = String(i + 1).padStart(3, '0'); // 001, 002, 003...
+          const contentType = projectData.contentTypes[i]; // "image" or "video"
+          const isVideo = contentType === "video";
           
-          // Add click event for fullscreen - pass the correct index
-          placeholder.addEventListener('click', () => openFullscreen(i));
+          let contentElement;
           
-          gallery.prepend(placeholder);
-          galleryImages.push(placeholder);
+          if (isVideo) {
+            // Create video element
+            const video = document.createElement('video');
+            video.className = 'gallery-content video';
+            video.playsInline = true;
+            video.preload = 'metadata';
+            
+            // Video source with title case naming
+            video.innerHTML = `
+              <source src="../content/projects/${projectData.slug}/${imgNumber}-Seed-Freedom-Campaign.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            `;
+            
+            // Create play button overlay
+            const playButton = document.createElement('div');
+            playButton.className = 'video-play-button';
+            playButton.addEventListener('click', function(e) {
+              e.stopPropagation();
+              video.play();
+              playButton.style.display = 'none';
+            });
+            
+            video.appendChild(playButton);
+            
+            // Pause video when it ends
+            video.addEventListener('ended', function() {
+              playButton.style.display = 'flex';
+            });
+            
+            video.addEventListener('pause', function() {
+              playButton.style.display = 'flex';
+            });
+            
+            contentElement = video;
+          } else {
+            // Create image element with title case naming
+            const img = document.createElement('img');
+            img.className = 'gallery-content';
+            img.loading = 'lazy';
+            
+            // Single image source for both gallery and fullscreen
+            img.src = `../content/projects/${projectData.slug}/${imgNumber}-Seed-Freedom-Campaign.jpg`;
+            img.alt = `${projectData.title.replace('<br>', ' ')} - Content ${i + 1}`;
+            
+            // Set object-fit for proper cropping
+            img.style.objectFit = 'cover';
+            
+            contentElement = img;
+          }
+          
+          contentElement.dataset.index = i;
+          contentElement.dataset.isVideo = isVideo;
+          contentElement.dataset.contentType = contentType;
+          
+          // Add click event for fullscreen
+          contentElement.addEventListener('click', () => openFullscreen(i));
+          
+          gallery.appendChild(contentElement);
+          
+          galleryContent.push({
+            element: contentElement,
+            index: i,
+            isVideo: isVideo,
+            contentType: contentType
+          });
         }
+
+        // Add back the navigation
+        const galleryNav = document.createElement('div');
+        galleryNav.className = 'gallery-nav';
+        galleryNav.innerHTML = `
+          <button class="nav-btn prev">←</button>
+          <span class="image-counter">1 / ${projectData.contentCount}</span>
+          <button class="nav-btn next">→</button>
+        `;
+        gallery.appendChild(galleryNav);
 
         // Create fullscreen overlay
         const fullscreenOverlay = document.createElement('div');
         fullscreenOverlay.className = 'fullscreen-overlay';
         
-        // Create container for image
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'fullscreen-image-container';
+        // Create container for content
+        const contentContainer = document.createElement('div');
+        contentContainer.className = 'fullscreen-content-container';
         
-        const fullscreenImage = document.createElement('div');
-        fullscreenImage.className = 'fullscreen-image';
+        // Fullscreen content will be created dynamically
+        const fullscreenContent = document.createElement('div');
+        fullscreenContent.className = 'fullscreen-content';
         
         // Create separate close button at column 1
         const fullscreenClose = document.createElement('button');
@@ -860,31 +995,69 @@
         fullscreenNavigation.className = 'fullscreen-navigation';
         fullscreenNavigation.innerHTML = `
           <button class="nav-btn prev">←</button>
-          <span class="image-counter">1 / 10</span>
+          <span class="image-counter">1 / ${projectData.contentCount}</span>
           <button class="nav-btn next">→</button>
         `;
         
-        imageContainer.appendChild(fullscreenImage);
-        fullscreenOverlay.appendChild(imageContainer);
+        contentContainer.appendChild(fullscreenContent);
+        fullscreenOverlay.appendChild(contentContainer);
         fullscreenOverlay.appendChild(fullscreenClose);
         fullscreenOverlay.appendChild(fullscreenNavigation);
         document.body.appendChild(fullscreenOverlay);
 
         // Fullscreen functionality
         function openFullscreen(index) {
-          // Set the current index to match the clicked image
           currentIndex = index;
-          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
+          const currentContent = galleryContent[currentIndex];
+          
+          // Clear previous content
+          fullscreenContent.innerHTML = '';
+          
+          if (currentContent.isVideo) {
+            // Create video element for fullscreen with title case naming
+            const video = document.createElement('video');
+            video.className = 'fullscreen-content';
+            video.controls = true;
+            video.autoplay = true;
+            video.playsInline = true;
+            
+            const videoNumber = String(currentIndex + 1).padStart(3, '0');
+            video.innerHTML = `
+              <source src="../content/projects/${projectData.slug}/${videoNumber}-Seed-Freedom-Campaign.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            `;
+            
+            fullscreenContent.appendChild(video);
+          } else {
+            // Create image element for fullscreen with title case naming
+            const img = document.createElement('img');
+            img.className = 'fullscreen-content';
+            img.style.objectFit = 'contain';
+            
+            const imgNumber = String(currentIndex + 1).padStart(3, '0');
+            img.src = `../content/projects/${projectData.slug}/${imgNumber}-Seed-Freedom-Campaign.jpg`;
+            img.alt = `${projectData.title.replace('<br>', ' ')} - Content ${currentIndex + 1}`;
+            
+            fullscreenContent.appendChild(img);
+          }
+          
           fullscreenOverlay.style.display = 'grid';
           document.body.classList.add('fullscreen-active');
           updateFullscreenCounter();
-          updateGallery(); // Ensure gallery view is updated
+          updateGallery();
         }
 
         function closeFullscreen() {
+          // Stop any playing video
+          const video = fullscreenContent.querySelector('video');
+          if (video) {
+            video.pause();
+            video.currentTime = 0;
+          }
+          
           fullscreenOverlay.style.display = 'none';
           document.body.classList.remove('fullscreen-active');
-          updateGallery(); // Ensure gallery view is updated after closing
+          updateGallery();
         }
 
         function updateFullscreenCounter() {
@@ -892,25 +1065,35 @@
           const galleryCounter = document.querySelector('.gallery-nav .image-counter');
           const fullscreenCounter = fullscreenNavigation.querySelector('.image-counter');
           
-          galleryCounter.textContent = `${currentIndex + 1} / 10`;
-          fullscreenCounter.textContent = `${currentIndex + 1} / 10`;
+          galleryCounter.textContent = `${currentIndex + 1} / ${projectData.contentCount}`;
+          fullscreenCounter.textContent = `${currentIndex + 1} / ${projectData.contentCount}`;
         }
 
         // Event listeners for fullscreen navigation
         fullscreenNavigation.querySelector('.prev').addEventListener('click', function(e) {
           e.stopPropagation();
-          currentIndex = (currentIndex - 1 + 10) % 10;
-          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
-          updateFullscreenCounter();
-          updateGallery(); // Update gallery view to match
+          // Stop any playing video first
+          const video = fullscreenContent.querySelector('video');
+          if (video) {
+            video.pause();
+            video.currentTime = 0;
+          }
+          
+          currentIndex = (currentIndex - 1 + projectData.contentCount) % projectData.contentCount;
+          openFullscreen(currentIndex);
         });
 
         fullscreenNavigation.querySelector('.next').addEventListener('click', function(e) {
           e.stopPropagation();
-          currentIndex = (currentIndex + 1) % 10;
-          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
-          updateFullscreenCounter();
-          updateGallery(); // Update gallery view to match
+          // Stop any playing video first
+          const video = fullscreenContent.querySelector('video');
+          if (video) {
+            video.pause();
+            video.currentTime = 0;
+          }
+          
+          currentIndex = (currentIndex + 1) % projectData.contentCount;
+          openFullscreen(currentIndex);
         });
 
         // Event listeners
@@ -924,27 +1107,45 @@
           if (fullscreenOverlay.style.display === 'grid') {
             if (e.key === 'Escape') closeFullscreen();
             if (e.key === 'ArrowLeft') {
-              currentIndex = (currentIndex - 1 + 10) % 10;
-              fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
-              updateFullscreenCounter();
-              updateGallery(); // Update gallery view to match
+              // Stop any playing video first
+              const video = fullscreenContent.querySelector('video');
+              if (video) {
+                video.pause();
+                video.currentTime = 0;
+              }
+              
+              currentIndex = (currentIndex - 1 + projectData.contentCount) % projectData.contentCount;
+              openFullscreen(currentIndex);
             }
             if (e.key === 'ArrowRight') {
-              currentIndex = (currentIndex + 1) % 10;
-              fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
-              updateFullscreenCounter();
-              updateGallery(); // Update gallery view to match
+              // Stop any playing video first
+              const video = fullscreenContent.querySelector('video');
+              if (video) {
+                video.pause();
+                video.currentTime = 0;
+              }
+              
+              currentIndex = (currentIndex + 1) % projectData.contentCount;
+              openFullscreen(currentIndex);
             }
           }
         });
 
-        // Also allow click navigation on the image itself
-        fullscreenImage.addEventListener('click', (e) => {
-          e.stopPropagation();
-          currentIndex = (currentIndex + 1) % 10;
-          fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
-          updateFullscreenCounter();
-          updateGallery(); // Update gallery view to match
+        // Also allow click navigation on the image itself (but not videos)
+        fullscreenContent.addEventListener('click', (e) => {
+          // Only navigate on image click, not video click
+          if (e.target.tagName === 'IMG' && !galleryContent[currentIndex].isVideo) {
+            e.stopPropagation();
+            // Stop any playing video first
+            const video = fullscreenContent.querySelector('video');
+            if (video) {
+              video.pause();
+              video.currentTime = 0;
+            }
+            
+            currentIndex = (currentIndex + 1) % projectData.contentCount;
+            openFullscreen(currentIndex);
+          }
         });
 
         // Optional: Add swipe support for touch devices
@@ -958,27 +1159,23 @@
           const diffX = touchStartX - touchEndX;
 
           if (Math.abs(diffX) > 50) { // Minimum swipe distance
+            // Stop any playing video first
+            const video = fullscreenContent.querySelector('video');
+            if (video) {
+              video.pause();
+              video.currentTime = 0;
+            }
+            
             if (diffX > 0) {
               // Swipe left - next
-              currentIndex = (currentIndex + 1) % 10;
+              currentIndex = (currentIndex + 1) % projectData.contentCount;
             } else {
               // Swipe right - previous
-              currentIndex = (currentIndex - 1 + 10) % 10;
+              currentIndex = (currentIndex - 1 + projectData.contentCount) % projectData.contentCount;
             }
-            fullscreenImage.style.backgroundColor = getPlaceholderColor(currentIndex);
-            updateFullscreenCounter();
-            updateGallery(); // Update gallery view to match
+            openFullscreen(currentIndex);
           }
         });
-      }
-
-      // Helper function to generate placeholder colors
-      function getPlaceholderColor(index) {
-        const colors = [
-          '#e0e0e0', '#d6d6d6', '#cccccc', '#c2c2c2', '#b8b8b8',
-          '#aeaeae', '#a4a4a4', '#9a9a9a', '#909090', '#868686'
-        ];
-        return colors[index % colors.length];
       }
     });
   </script>
