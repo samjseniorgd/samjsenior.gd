@@ -147,11 +147,46 @@
     }
 
     .archive-image {
-      background: #eeeeee;
       width: 100%;
       height: 100%;
       object-fit: cover;
       z-index: 1;
+      opacity: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    /* Image container to handle loading */
+    .image-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Loading placeholder */
+    .image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .image-placeholder.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     /* --- CLICKABLE PROJECT STYLES - FIXED --- */
@@ -227,78 +262,94 @@
   </div>
 
   <script>
-    // JSON data structure for archive items - First Section
+    // Project data with hardcoded image filenames and updated link paths
     const archiveDataSection1 = [
       {
         title: "Teddy Western<br>Press Package",
+        folder: "Teddy-Western-Press-Package",
+        imageFile: "001-Teddy-Western-Press-Package.jpg",
         titleColumn: 1,
         imageColumn: 1,
         clickable: true,
-        link: "../Project-Pages/Teddy-Western-Press-Package.html"
+        link: "../Project-Pages/Teddy-Western-Press-Package.html"  // Changed from Project-Pages/
       },
       {
         title: "Culture Quest<br>Tracking Kit",
+        folder: "Culture-Quest-Tracking-Kit",
+        imageFile: "006-Culture-Quest-Tracking-Kit.jpg",
         titleColumn: 5,
         imageColumn: 5,
         clickable: true,
-        link: "../Project-Pages/Culture-Quest-Tracking-Kit.html"
+        link: "../Project-Pages/Culture-Quest-Tracking-Kit.html"  // Changed from Project-Pages/
       },
       {
         title: "Drifting<br>Cartographies",
+        folder: "Drifting-Cartographies",
+        imageFile: "001-Drifting-Cartographies.jpg",
         titleColumn: 9,
         imageColumn: 9,
         clickable: true,
-        link: "../Project-Pages/Drifting-Cartographies.html"
+        link: "../Project-Pages/Drifting-Cartographies.html"  // Changed from Project-Pages/
       }
     ];
 
-    // JSON data structure for archive items - Second Section
     const archiveDataSection2 = [
       {
         title: "Tea Card<br>Typology",
+        folder: "Tea-Card-Typology",
+        imageFile: "005-Tea-Card-Typology.jpg",
         titleColumn: 1,
         imageColumn: 1,
         clickable: true,
-        link: "../Project-Pages/Tea-Card-Typology.html"
+        link: "../Project-Pages/Tea-Card-Typology.html"  // Changed from Project-Pages/
       },
       {
         title: "Yorkshire<br>Stout & Porter",
+        folder: "Yorkshire-Stout-&-Porter",
+        imageFile: "001-Yorkshire-Stout-&-Porter.jpg",
         titleColumn: 5,
         imageColumn: 5,
         clickable: true,
-        link: "../Project-Pages/Yorkshire-Stout-&-Porter.html"
+        link: "../Project-Pages/Yorkshire-Stout-&-Porter.html"  // Changed from Project-Pages/
       },
       {
         title: "Forgotten<br>Trams",
+        folder: "Forgotten-Trams",
+        imageFile: "006-Forgotten-Trams.jpg",
         titleColumn: 9,
         imageColumn: 9,
         clickable: true,
-        link: "../Project-Pages/Forgotten-Trams.html"
+        link: "../Project-Pages/Forgotten-Trams.html"  // Changed from Project-Pages/
       }
     ];
 
-    // JSON data structure for archive items - Third Section
     const archiveDataSection3 = [
       {
         title: "Seed Freedom<br>Campaign",
+        folder: "Seed-Freedom-Campaign",
+        imageFile: "002-Seed-Freedom-Campaign.jpg",
         titleColumn: 1,
         imageColumn: 1,
         clickable: true,
-        link: "../Project-Pages/Seed-Freedom-Campaign.html"
+        link: "../Project-Pages/Seed-Freedom-Campaign.html"  // Changed from Project-Pages/
       },
       {
         title: "Seafarm<br>Sonnets",
+        folder: "Seafarm-Sonnets",
+        imageFile: "001-Seafarm-Sonnets.jpg",
         titleColumn: 5,
         imageColumn: 5,
         clickable: true,
-        link: "../Project-Pages/Seafarm-Sonnets.html"
+        link: "../Project-Pages/Seafarm-Sonnets.html"  // Changed from Project-Pages/
       },
       {
         title: "Confidence<br>In Community",
+        folder: "Confidence-In-Community",
+        imageFile: "001-Confidence-In-Community.jpg",
         titleColumn: 9,
         imageColumn: 9,
         clickable: true,
-        link: "../Project-Pages/Confidence-In-Community.html"
+        link: "../Project-Pages/Confidence-In-Community.html"  // Changed from Project-Pages/
       }
     ];
 
@@ -357,20 +408,103 @@
       titleElement.style.gridColumn = '1 / span 4';
       titleElement.style.gridRow = '1 / span 2';
       
-      // Create image element
-      const imageElement = document.createElement('div');
-      imageElement.className = 'archive-image';
-      imageElement.style.gridColumn = '1 / span 4';
-      imageElement.style.gridRow = '3 / span 5';
+      // Create image container
+      const imageContainer = document.createElement('div');
+      imageContainer.className = 'image-container';
+      imageContainer.style.gridColumn = '1 / span 4';
+      imageContainer.style.gridRow = '3 / span 5';
+      
+      // Create placeholder for loading
+      const placeholder = document.createElement('div');
+      placeholder.className = 'image-placeholder';
+      imageContainer.appendChild(placeholder);
+      
+      // Create image element with hardcoded filename
+      const img = document.createElement('img');
+      img.className = 'archive-image';
+      
+      // Set alt text
+      img.alt = item.title.replace('<br>', ' ');
+      
+      // Try different path structures for images
+      const imagePaths = [
+        // Try direct path first
+        `content/projects/${item.folder}/${item.imageFile}`,
+        // Try with different prefixes
+        `../content/projects/${item.folder}/${item.imageFile}`,
+        `./content/projects/${item.folder}/${item.imageFile}`,
+        `/content/projects/${item.folder}/${item.imageFile}`,
+        // Try just the folder
+        `${item.folder}/${item.imageFile}`,
+        // Try as absolute from root
+        `/projects/${item.folder}/${item.imageFile}`,
+      ];
+      
+      // Function to load image
+      function loadImage(img, paths, index = 0) {
+        if (index >= paths.length) {
+          console.error(`Could not load image for ${item.title}. Tried paths:`, paths);
+          return;
+        }
+        
+        const imgLoader = new Image();
+        imgLoader.onload = function() {
+          img.src = this.src;
+          placeholder.classList.add('hidden');
+        };
+        
+        imgLoader.onerror = function() {
+          loadImage(img, paths, index + 1);
+        };
+        
+        imgLoader.src = paths[index];
+      }
+      
+      // Start loading the image
+      loadImage(img, imagePaths);
+      
+      imageContainer.appendChild(img);
       
       // Add click event to the container
-      projectContainer.addEventListener('click', () => {
-        window.location.href = item.link;
+      projectContainer.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log(`Attempting to navigate to: ${item.link}`);
+        
+        // Try multiple link paths if the first one fails
+        const linkPaths = [
+          item.link,  // Direct link
+          `Project-Pages/${item.link}`,  // In Project-Pages folder
+          `../Project-Pages/${item.link}`,  // One level up
+          `./Project-Pages/${item.link}`,  // Current directory
+          `/Project-Pages/${item.link}`,  // Absolute from root
+          `pages/${item.link}`,  // Alternative folder name
+        ];
+        
+        // Try to navigate to the link
+        function tryNavigate(index = 0) {
+          if (index >= linkPaths.length) {
+            console.error(`Could not find project page for ${item.title}`);
+            alert(`Project page not found for: ${item.title}`);
+            return;
+          }
+          
+          const link = linkPaths[index];
+          console.log(`Trying link: ${link}`);
+          
+          // Create a test link to check if it exists
+          const testLink = document.createElement('a');
+          testLink.href = link;
+          
+          // Try to navigate
+          window.location.href = link;
+        }
+        
+        tryNavigate();
       });
       
       // Append elements to container
       projectContainer.appendChild(titleElement);
-      projectContainer.appendChild(imageElement);
+      projectContainer.appendChild(imageContainer);
       
       // Insert into scroll content
       container.appendChild(projectContainer);
@@ -404,7 +538,7 @@
     }
 
     // Initialize archive
-    createArchive();
+    document.addEventListener('DOMContentLoaded', createArchive);
 
     // Scroll functionality - attach to the entire document for vertical scrolling
     document.addEventListener('wheel', (e) => {
@@ -416,6 +550,15 @@
     // Prevent default scroll behavior on the entire page
     document.addEventListener('scroll', (e) => {
       e.preventDefault();
+    });
+
+    // Add click handler for menu links to prevent issues
+    document.querySelectorAll('.menu a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const href = this.getAttribute('href');
+        window.location.href = href;
+      });
     });
   </script>
 </body>
